@@ -44,6 +44,13 @@ export type ActorDto = {
   birthYear: number
 }
 
+export type MovieActorsDto = {
+  id: number
+  name: string
+  birthYear: number
+  role: string | null
+}
+
 // What POST /api/movies/{movieId}/reviews needs - id and createdAt are the
 // server's to invent.
 export type ReviewCreateDto = {
@@ -64,5 +71,5 @@ export type MovieDetailDto = {
   language: string | null
   budget: number | null
   reviews: ReviewDto[]
-  actors: ActorDto[]
+  actors: MovieActorsDto[]
 }

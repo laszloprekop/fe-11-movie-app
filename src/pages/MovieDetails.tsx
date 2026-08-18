@@ -64,7 +64,8 @@ export default function MovieDetails() {
       {state.status === "ready" && (
         <article className="max-w-2xl">
           <h1 className="text-3xl font-bold">
-            {state.movie.title} <span className="font-normal">({state.movie.year})</span>
+            {state.movie.title}{" "}
+            <span className="font-normal">({state.movie.year})</span>
           </h1>
           <p className="mt-1 text-sm">
             {state.movie.genre} · {state.movie.duration} min
@@ -73,16 +74,24 @@ export default function MovieDetails() {
               <> · budget {state.movie.budget.toLocaleString("sv-SE")} USD</>
             )}
           </p>
-          {state.movie.synopsis && <p className="mt-4">{state.movie.synopsis}</p>}
+          {state.movie.synopsis && (
+            <p className="mt-4">{state.movie.synopsis}</p>
+          )}
 
           <h2 className="mt-6 text-xl font-bold">Skådespelare</h2>
           <ul className="mt-2 space-y-1">
             {state.movie.actors.map((actor) => (
               <li key={actor.id}>
-                {actor.name} <span className="text-sm">(f. {actor.birthYear})</span>
+                {actor.name}{" "}
+                {actor.role && (
+                  <span className="italic"> som {actor.role}</span>
+                )}{" "}
+                <span className="text-sm">(f. {actor.birthYear})</span>
               </li>
             ))}
-            {state.movie.actors.length === 0 && <li>Inga skådespelare registrerade.</li>}
+            {state.movie.actors.length === 0 && (
+              <li>Inga skådespelare registrerade.</li>
+            )}
           </ul>
 
           <h2 className="mt-6 text-xl font-bold">Recensioner</h2>
@@ -96,10 +105,14 @@ export default function MovieDetails() {
                 <p>{review.comment}</p>
               </li>
             ))}
-            {state.movie.reviews.length === 0 && <li>Inga recensioner ännu.</li>}
+            {state.movie.reviews.length === 0 && (
+              <li>Inga recensioner ännu.</li>
+            )}
           </ul>
 
-          {state.saveError !== undefined && <ErrorBanner error={state.saveError} />}
+          {state.saveError !== undefined && (
+            <ErrorBanner error={state.saveError} />
+          )}
           <ReviewForm onSubmit={handleAddReview} />
         </article>
       )}
