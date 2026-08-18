@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react"
+import { useState, type SubmitEvent } from "react"
 import type { GenreDto, MovieCreateDto, MovieDto } from "../api/types"
 
 type Props = {
@@ -15,7 +15,12 @@ type Props = {
 // in one place, never per keystroke.
 const EMPTY = { title: "", year: "", genreId: "", duration: "" }
 
-export default function MovieForm({ genres, initial, onSubmit, onCancel }: Props) {
+export default function MovieForm({
+  genres,
+  initial,
+  onSubmit,
+  onCancel,
+}: Props) {
   const editing = initial !== null
   const [fields, setFields] = useState(
     initial
@@ -33,7 +38,7 @@ export default function MovieForm({ genres, initial, onSubmit, onCancel }: Props
       setFields({ ...fields, [name]: e.target.value })
   }
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
     try {
       await onSubmit({
@@ -55,11 +60,24 @@ export default function MovieForm({ genres, initial, onSubmit, onCancel }: Props
       </h2>
       <label className="grid gap-1">
         Titel
-        <input value={fields.title} onChange={set("title")} required className="rounded border p-2" />
+        <input
+          value={fields.title}
+          onChange={set("title")}
+          required
+          className="rounded border p-2"
+        />
       </label>
       <label className="grid gap-1">
         År
-        <input type="number" value={fields.year} onChange={set("year")} required min="1888" max="2100" className="rounded border p-2" />
+        <input
+          type="number"
+          value={fields.year}
+          onChange={set("year")}
+          required
+          min="1888"
+          max="2100"
+          className="rounded border p-2"
+        />
       </label>
       <label className="grid gap-1">
         Genre
@@ -78,19 +96,37 @@ export default function MovieForm({ genres, initial, onSubmit, onCancel }: Props
           ))}
         </select>
         {editing && (
-          <small>Genren ändras inte vid redigering - API:ets uppdatering tar inga genrer.</small>
+          <small>
+            Genren ändras inte vid redigering - API:ets uppdatering tar inga
+            genrer.
+          </small>
         )}
       </label>
       <label className="grid gap-1">
         Speltid (minuter)
-        <input type="number" value={fields.duration} onChange={set("duration")} required min="1" max="1000" className="rounded border p-2" />
+        <input
+          type="number"
+          value={fields.duration}
+          onChange={set("duration")}
+          required
+          min="1"
+          max="1000"
+          className="rounded border p-2"
+        />
       </label>
       <div className="flex gap-3">
-        <button type="submit" className="rounded bg-emerald-700 px-4 py-2 text-white">
+        <button
+          type="submit"
+          className="rounded bg-emerald-700 px-4 py-2 text-white"
+        >
           {editing ? "Spara ändringar" : "Lägg till film"}
         </button>
         {editing && (
-          <button type="button" onClick={onCancel} className="rounded border-2 border-stone-800 px-4 py-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded border-2 border-stone-800 px-4 py-2"
+          >
             Avbryt
           </button>
         )}
