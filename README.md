@@ -5,7 +5,7 @@ Lexicon/LTU frontend course. Full CRUD over the movie catalogue, detail pages wi
 actors, filtering, an admin dashboard — and **Gissa filmen**, a quiz built from the catalogue's
 own data.
 
-**Live:** _(Pages URL arrives with the deploy step)_
+**Live:** [_(Pages URL arrives with the deploy step)_](https://laszloprekop.github.io/fe-11-movie-app/)
 
 ## Stack
 
