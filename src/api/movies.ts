@@ -20,3 +20,7 @@ export function updateMovie(id: number, draft: MovieUpdateDto): Promise<void> {
     body: JSON.stringify(draft),
   })
 }
+
+export function deleteMovie(id: number): Promise<void> {
+  return request<void>(`/api/movies/${id}`, { method: "DELETE" })
+}

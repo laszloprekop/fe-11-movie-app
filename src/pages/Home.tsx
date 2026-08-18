@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { createMovie, getMovies, updateMovie } from "../api/movies"
+import { createMovie, deleteMovie, getMovies, updateMovie } from "../api/movies"
 import { getGenres } from "../api/genres"
 import type { GenreDto, MovieCreateDto, MovieDto } from "../api/types"
 import ErrorBanner from "../components/ErrorBanner"
@@ -65,6 +65,22 @@ export default function Home() {
     }
   }
 
+  async function handleDelete(id: number) {
+    if (state.status !== "ready") return
+    try {
+      await deleteMovie(id)
+      setState({
+        ...state,
+        movies: state.movies.filter((m) => m.id !== id),
+        // Deleting the movie being edited would leave the form editing a ghost.
+        editing: state.editing?.id === id ? undefined : state.editing,
+        saveError: undefined,
+      })
+    } catch (error) {
+      setState({ ...state, saveError: error })
+    }
+  }
+
   return (
     <>
       <h1 className="text-3xl font-bold">Movie App Mega X-Treme 3000</h1>
@@ -84,6 +100,13 @@ export default function Home() {
                   className="rounded border px-2 py-0.5 text-sm"
                 >
                   Redigera
+                </button>
+                <button
+                  onClick={() => handleDelete(movie.id)}
+                  aria-label={`Ta bort ${movie.title}`}
+                  className="rounded border border-red-700 px-2 py-0.5 text-sm text-red-700"
+                >
+                  Ta bort
                 </button>
               </li>
             ))}
