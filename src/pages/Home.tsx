@@ -22,9 +22,18 @@ type PageState =
 export default function Home() {
   const [state, setState] = useState<PageState>({ status: "loading" })
   // The URL is the filter state - shareable, bookmarkable, back-buttonable.
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const title = searchParams.get("title") ?? undefined
   const genre = searchParams.get("genre") ?? undefined
+
+  function updateFilter(key: "title" | "genre", value: string) {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev)
+      if (value) next.set(key, value)
+      else next.delete(key)
+      return next
+    })
+  }
 
   useEffect(() => {
     let ignore = false
@@ -98,6 +107,38 @@ export default function Home() {
       {state.status === "error" && <ErrorBanner error={state.error} />}
       {state.status === "ready" && (
         <>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault()
+              const draft = new FormData(event.currentTarget).get(
+                "title",
+              ) as string
+              updateFilter("title", draft.trim())
+            }}
+            className="mt-4 flex flex-wrap gap-2"
+          >
+            <input
+              key={title ?? ""}
+              name="title"
+              defaultValue={title ?? ""}
+              placeholder="Sök på titel…"
+              className="rounded border px-2 py-1"
+            />
+            <button className="rounded border px-3 py-1">Sök</button>
+            <select
+              value={genre ?? ""}
+              onChange={(event) => updateFilter("genre", event.target.value)}
+              aria-label="Filtrera på genre"
+              className="rounded border px-2 py-1"
+            >
+              <option value="">Alla genrer</option>
+              {state.genres.map((g) => (
+                <option key={g.id} value={g.name}>
+                  {g.name}
+                </option>
+              ))}
+            </select>
+          </form>
           <ul className="mt-4 space-y-2">
             {state.movies.map((movie) => (
               <li key={movie.id} className="flex items-center gap-3">
@@ -122,6 +163,7 @@ export default function Home() {
                 </button>
               </li>
             ))}
+            {state.movies.length === 0 && <li>Inga filmer matchar filtret.</li>}
           </ul>
           {state.saveError !== undefined && (
             <ErrorBanner error={state.saveError} />
