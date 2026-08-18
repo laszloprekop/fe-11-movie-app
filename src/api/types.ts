@@ -44,6 +44,14 @@ export type ActorDto = {
   birthYear: number
 }
 
+// What POST /api/movies/{movieId}/reviews needs - id and createdAt are the
+// server's to invent.
+export type ReviewCreateDto = {
+  reviewerName: string
+  comment: string
+  rating: number
+}
+
 // The heavier half: MovieDto's fields plus the flattened 1:1 details and
 // both relation lists. C#'s decimal? and string? become number/string | null.
 export type MovieDetailDto = {

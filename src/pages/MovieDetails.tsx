@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { getMovieDetails } from "../api/movies"
-import type { MovieDetailDto } from "../api/types"
+import { createReview } from "../api/reviews"
+import type { MovieDetailDto, ReviewCreateDto } from "../api/types"
 import ErrorBanner from "../components/ErrorBanner"
+import ReviewForm from "../components/ReviewForm"
 
 type PageState =
   | { status: "loading" }
   | { status: "error"; error: unknown }
-  | { status: "ready"; movie: MovieDetailDto }
+  | { status: "ready"; movie: MovieDetailDto; saveError?: unknown }
 
 export default function MovieDetails() {
   // useParams always hands back strings - the URL is text. Converting and
@@ -34,6 +36,21 @@ export default function MovieDetails() {
 
   if (Number.isNaN(movieId)) {
     return <p className="mt-4">Ogiltigt film-id i adressen.</p>
+  }
+
+  async function handleAddReview(draft: ReviewCreateDto) {
+    if (state.status !== "ready") return
+    try {
+      const created = await createReview(movieId, draft)
+      // Nested update: a fresh movie object holding a fresh reviews array.
+      setState({
+        status: "ready",
+        movie: { ...state.movie, reviews: [...state.movie.reviews, created] },
+      })
+    } catch (error) {
+      setState({ ...state, saveError: error })
+      throw error // rethrown so the form keeps its draft
+    }
   }
 
   return (
@@ -81,6 +98,9 @@ export default function MovieDetails() {
             ))}
             {state.movie.reviews.length === 0 && <li>Inga recensioner ännu.</li>}
           </ul>
+
+          {state.saveError !== undefined && <ErrorBanner error={state.saveError} />}
+          <ReviewForm onSubmit={handleAddReview} />
         </article>
       )}
     </>
