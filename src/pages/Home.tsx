@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 import { createMovie, deleteMovie, getMovies, updateMovie } from "../api/movies"
 import { getGenres } from "../api/genres"
 import type { GenreDto, MovieCreateDto, MovieDto } from "../api/types"
@@ -21,10 +21,14 @@ type PageState =
 
 export default function Home() {
   const [state, setState] = useState<PageState>({ status: "loading" })
+  // The URL is the filter state - shareable, bookmarkable, back-buttonable.
+  const [searchParams] = useSearchParams()
+  const title = searchParams.get("title") ?? undefined
+  const genre = searchParams.get("genre") ?? undefined
 
   useEffect(() => {
     let ignore = false
-    Promise.all([getMovies(), getGenres()])
+    Promise.all([getMovies({ title, genre }), getGenres()])
       .then(([movies, genres]) => {
         if (!ignore) setState({ status: "ready", movies, genres })
       })
@@ -34,13 +38,17 @@ export default function Home() {
     return () => {
       ignore = true
     }
-  }, [])
+  }, [title, genre])
 
   async function handleCreate(draft: MovieCreateDto) {
     if (state.status !== "ready") return
     try {
       const created = await createMovie(draft)
-      setState({ ...state, movies: [...state.movies, created], saveError: undefined })
+      setState({
+        ...state,
+        movies: [...state.movies, created],
+        saveError: undefined,
+      })
     } catch (error) {
       setState({ ...state, saveError: error })
       throw error // rethrown so the form keeps its draft
@@ -55,7 +63,9 @@ export default function Home() {
       await updateMovie(id, { title, year, duration })
       setState({
         ...state,
-        movies: state.movies.map((m) => (m.id === id ? { ...m, title, year, duration } : m)),
+        movies: state.movies.map((m) =>
+          m.id === id ? { ...m, title, year, duration } : m,
+        ),
         editing: undefined,
         saveError: undefined,
       })
@@ -96,7 +106,9 @@ export default function Home() {
                 </Link>{" "}
                 ({movie.year})
                 <button
-                  onClick={() => setState({ ...state, editing: movie, saveError: undefined })}
+                  onClick={() =>
+                    setState({ ...state, editing: movie, saveError: undefined })
+                  }
                   className="rounded border px-2 py-0.5 text-sm"
                 >
                   Redigera
@@ -111,7 +123,9 @@ export default function Home() {
               </li>
             ))}
           </ul>
-          {state.saveError !== undefined && <ErrorBanner error={state.saveError} />}
+          {state.saveError !== undefined && (
+            <ErrorBanner error={state.saveError} />
+          )}
           <MovieForm
             key={state.editing?.id ?? "new"}
             genres={state.genres}

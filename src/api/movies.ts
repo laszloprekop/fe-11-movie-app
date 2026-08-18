@@ -1,9 +1,26 @@
 import { request } from "./client"
-import type { MovieCreateDto, MovieDetailDto, MovieDto, MovieUpdateDto } from "./types"
+import type {
+  MovieCreateDto,
+  MovieDetailDto,
+  MovieDto,
+  MovieUpdateDto,
+} from "./types"
 
-// The seam holds: same signature the stub had, real data behind it.
-export function getMovies(): Promise<MovieDto[]> {
-  return request<MovieDto[]>("/api/movies")
+// The filter vocab. of GET /api/movies
+// - every field optional
+// - absent fields stay out of the query string entirely
+
+export type MovieFilters = {
+  title?: string
+  genre?: string
+}
+
+export function getMovies(filters: MovieFilters = {}): Promise<MovieDto[]> {
+  const params = new URLSearchParams()
+  if (filters.title) params.set("title", filters.title)
+  if (filters.genre) params.set("genre", filters.genre)
+  const query = params.toString()
+  return request<MovieDto[]>(query ? `/api/movies?${query}` : "/api/movies")
 }
 
 export function createMovie(draft: MovieCreateDto): Promise<MovieDto> {
