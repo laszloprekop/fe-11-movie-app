@@ -1,1 +1,73 @@
 @import "tailwindcss";
+/* In the components layer: terminal.css beats Tailwind's preflight but loses
+   to explicit utilities — element chrome from the theme, layout from us. */
+@import "./terminal.css" layer(components);
+
+/* App idioms on top of terminal.css — same vocabulary, a few extra words. */
+:root {
+  --danger: #cf6a6a;
+}
+
+/* The prompt is the signature: every page title reads as a command. */
+h1::before {
+  content: "> ";
+  color: var(--accent);
+}
+
+h1::after {
+  content: "▊";
+  margin-left: 0.15em;
+  color: var(--accent);
+  animation: blink 1.2s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  h1::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Inverse video marks the current place — terminal selection, not underline. */
+nav {
+  border-bottom: 2px solid var(--accent);
+}
+
+nav a {
+  text-decoration: none;
+  padding: 2px 8px;
+}
+
+nav a.active {
+  background: var(--accent);
+  color: var(--background);
+}
+
+/* Buttons follow the terminal's accent; these two words retune it. */
+button.danger {
+  --accent: var(--danger);
+}
+
+button.muted {
+  --accent: var(--foreground);
+}
+
+/* List-row buttons at prompt scale. */
+button.small {
+  padding: 1px 8px;
+  border-width: 2px;
+  font-size: 0.85em;
+}
+
+/* Errors speak in the terminal's own alert voice. */
+p.alert {
+  border-left: 4px solid var(--danger);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  padding: 10px 14px;
+}

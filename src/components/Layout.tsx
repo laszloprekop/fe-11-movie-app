@@ -3,7 +3,7 @@ import { NavLink, Outlet } from "react-router-dom"
 export default function Layout() {
   return (
     <>
-      <nav className="flex gap-4 p-4">
+      <nav className="flex gap-2 p-4">
         <NavLink to="/" end>
           Hem
         </NavLink>

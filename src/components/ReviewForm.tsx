@@ -39,7 +39,7 @@ export default function ReviewForm({ onSubmit }: Props) {
           value={fields.reviewerName}
           onChange={set("reviewerName")}
           required
-          className="rounded border p-2"
+         
         />
       </label>
       <label className="grid gap-1">
@@ -47,7 +47,7 @@ export default function ReviewForm({ onSubmit }: Props) {
         <select
           value={fields.rating}
           onChange={set("rating")}
-          className="rounded border p-2"
+         
         >
           {[5, 4, 3, 2, 1].map((n) => (
             <option key={n} value={n}>
@@ -63,12 +63,12 @@ export default function ReviewForm({ onSubmit }: Props) {
           onChange={set("comment")}
           required
           rows={3}
-          className="rounded border p-2"
+         
         />
       </label>
       <button
         type="submit"
-        className="justify-self-start rounded bg-emerald-700 px-4 py-2 text-white"
+        className="justify-self-start"
       >
         Skicka recension
       </button>

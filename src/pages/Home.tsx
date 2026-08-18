@@ -122,14 +122,12 @@ export default function Home() {
               name="title"
               defaultValue={title ?? ""}
               placeholder="Sök på titel…"
-              className="rounded border px-2 py-1"
             />
-            <button className="rounded border px-3 py-1">Sök</button>
+            <button>Sök</button>
             <select
               value={genre ?? ""}
               onChange={(event) => updateFilter("genre", event.target.value)}
               aria-label="Filtrera på genre"
-              className="rounded border px-2 py-1"
             >
               <option value="">Alla genrer</option>
               {state.genres.map((g) => (
@@ -150,14 +148,14 @@ export default function Home() {
                   onClick={() =>
                     setState({ ...state, editing: movie, saveError: undefined })
                   }
-                  className="rounded border px-2 py-0.5 text-sm"
+                  className="small"
                 >
                   Redigera
                 </button>
                 <button
                   onClick={() => handleDelete(movie.id)}
                   aria-label={`Ta bort ${movie.title}`}
-                  className="rounded border border-red-700 px-2 py-0.5 text-sm text-red-700"
+                  className="small danger"
                 >
                   Ta bort
                 </button>

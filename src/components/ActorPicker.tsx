@@ -32,7 +32,6 @@ export default function ActorPicker({ actors, onAdd }: Props) {
         onChange={(e) => setActorId(e.target.value)}
         aria-label="Välj skådespelare"
         required
-        className="rounded border px-2 py-1"
       >
         <option value="">Välj skådespelare…</option>
         {actors.map((a) => (
@@ -46,9 +45,8 @@ export default function ActorPicker({ actors, onAdd }: Props) {
         onChange={(e) => setRole(e.target.value)}
         placeholder="Roll (t.ex. Huvudskurk)"
         aria-label="Roll"
-        className="border px-2 py-1"
       />
-      <button type="submit" className="border px-3 py-1">
+      <button type="submit">
         Lägg till
       </button>
     </form>

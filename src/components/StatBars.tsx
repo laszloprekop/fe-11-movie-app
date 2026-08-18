@@ -26,8 +26,13 @@ export default function StatBars({ data, nameKey, valueKey, label, max }: Props)
           axisLine={false}
           tick={{ fill: 'currentColor', fontSize: 14 }}
         />
-        <Tooltip />
-        <Bar dataKey={valueKey} name={label} fill="#047857" barSize={14} radius={[0, 4, 4, 0]}>
+        <Tooltip
+          contentStyle={{ background: 'var(--background)', border: '1px solid var(--accent)', borderRadius: 0 }}
+          labelStyle={{ color: 'var(--foreground)' }}
+          itemStyle={{ color: 'var(--accent)' }}
+          cursor={{ fill: 'rgba(236, 234, 229, 0.08)' }}
+        />
+        <Bar dataKey={valueKey} name={label} fill="var(--accent)" barSize={14}>
           <LabelList dataKey={valueKey} position="right" fill="currentColor" fontSize={13} />
         </Bar>
       </BarChart>

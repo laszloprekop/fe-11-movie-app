@@ -64,7 +64,7 @@ export default function MovieForm({
           value={fields.title}
           onChange={set("title")}
           required
-          className="rounded border p-2"
+         
         />
       </label>
       <label className="grid gap-1">
@@ -76,7 +76,7 @@ export default function MovieForm({
           required
           min="1888"
           max="2100"
-          className="rounded border p-2"
+         
         />
       </label>
       <label className="grid gap-1">
@@ -86,7 +86,7 @@ export default function MovieForm({
           onChange={set("genreId")}
           required={!editing}
           disabled={editing}
-          className="rounded border p-2 disabled:bg-stone-100"
+          className="disabled:opacity-50"
         >
           <option value="">{editing ? initial.genre : "Välj genre…"}</option>
           {genres.map((genre) => (
@@ -111,13 +111,13 @@ export default function MovieForm({
           required
           min="1"
           max="1000"
-          className="rounded border p-2"
+         
         />
       </label>
       <div className="flex gap-3">
         <button
           type="submit"
-          className="rounded bg-emerald-700 px-4 py-2 text-white"
+          
         >
           {editing ? "Spara ändringar" : "Lägg till film"}
         </button>
@@ -125,7 +125,7 @@ export default function MovieForm({
           <button
             type="button"
             onClick={onCancel}
-            className="rounded border-2 border-stone-800 px-4 py-2"
+            className="muted"
           >
             Avbryt
           </button>

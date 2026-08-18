@@ -83,7 +83,7 @@ export default function MovieDetails() {
 
   return (
     <>
-      <button onClick={() => navigate(-1)} className="mb-4 underline">
+      <button onClick={() => navigate(-1)} className="small mb-4">
         ← Tillbaka
       </button>
 
@@ -129,7 +129,7 @@ export default function MovieDetails() {
           <h2 className="mt-6 text-xl font-bold">Recensioner</h2>
           <ul className="mt-2 space-y-3">
             {state.movie.reviews.map((review) => (
-              <li key={review.id} className="rounded border p-3">
+              <li key={review.id} className="border p-3 [&_p]:my-1">
                 <p className="font-bold">
                   {review.reviewerName} · {"★".repeat(review.rating)}
                   {"☆".repeat(5 - review.rating)}
