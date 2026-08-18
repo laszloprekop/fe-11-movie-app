@@ -2,14 +2,22 @@ import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { getMovieDetails } from "../api/movies"
 import { createReview } from "../api/reviews"
-import type { MovieDetailDto, ReviewCreateDto } from "../api/types"
+import type { ActorDto, MovieDetailDto, ReviewCreateDto } from "../api/types"
 import ErrorBanner from "../components/ErrorBanner"
 import ReviewForm from "../components/ReviewForm"
+import { addActorToMovie, getActors } from "../api/actors"
+import ActorPicker from "../components/ActorPicker"
 
 type PageState =
   | { status: "loading" }
   | { status: "error"; error: unknown }
-  | { status: "ready"; movie: MovieDetailDto; saveError?: unknown }
+  | {
+      status: "ready"
+      movie: MovieDetailDto
+      allActors: ActorDto[]
+      saveError?: unknown
+      actorError?: unknown
+    }
 
 export default function MovieDetails() {
   // useParams always hands back strings - the URL is text. Converting and
@@ -22,9 +30,9 @@ export default function MovieDetails() {
   useEffect(() => {
     if (Number.isNaN(movieId)) return
     let ignore = false
-    getMovieDetails(movieId)
-      .then((movie) => {
-        if (!ignore) setState({ status: "ready", movie })
+    Promise.all([getMovieDetails(movieId), getActors()])
+      .then(([movie, allActors]) => {
+        if (!ignore) setState({ status: "ready", movie, allActors })
       })
       .catch((error: unknown) => {
         if (!ignore) setState({ status: "error", error })
@@ -38,14 +46,34 @@ export default function MovieDetails() {
     return <p className="mt-4">Ogiltigt film-id i adressen.</p>
   }
 
+  async function handleAddActor(actor: ActorDto, role: string) {
+    if (state.status !== "ready") return
+    try {
+      await addActorToMovie(movieId, actor.id, role)
+      // 204 back — the new list entry is built from what we already know.
+      setState({
+        ...state,
+        movie: {
+          ...state.movie,
+          actors: [...state.movie.actors, { ...actor, role: role || null }],
+        },
+        actorError: undefined,
+      })
+    } catch (error) {
+      setState({ ...state, actorError: error })
+      throw error // rethrown so the picker keeps its draft
+    }
+  }
+
   async function handleAddReview(draft: ReviewCreateDto) {
     if (state.status !== "ready") return
     try {
       const created = await createReview(movieId, draft)
       // Nested update: a fresh movie object holding a fresh reviews array.
       setState({
-        status: "ready",
+        ...state,
         movie: { ...state.movie, reviews: [...state.movie.reviews, created] },
+        saveError: undefined,
       })
     } catch (error) {
       setState({ ...state, saveError: error })
@@ -80,6 +108,10 @@ export default function MovieDetails() {
 
           <h2 className="mt-6 text-xl font-bold">Skådespelare</h2>
           <ul className="mt-2 space-y-1">
+            {state.actorError !== undefined && (
+              <ErrorBanner error={state.actorError} />
+            )}
+            <ActorPicker actors={state.allActors} onAdd={handleAddActor} />
             {state.movie.actors.map((actor) => (
               <li key={actor.id}>
                 {actor.name}{" "}
