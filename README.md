@@ -1,11 +1,19 @@
 # Movie App Mega X-Treme 3000
 
-A React client for [MovieApi-CA](https://github.com/laszloprekop/MovieApi-CA) — Övning 11 in the
-Lexicon/LTU frontend course. Full CRUD over the movie catalogue, detail pages with reviews and
-actors, filtering, an admin dashboard — and **Gissa filmen**, a quiz built from the catalogue's
-own data.
+A React client for [MovieApi-CA](https://github.com/laszloprekop/MovieApi-CA)
+Övning 11 in the Lexicon/LTU frontend course.
 
-**Live:** [_(Pages URL arrives with the deploy step)_](https://laszloprekop.github.io/fe-11-movie-app/)
+- full CRUD over the movie catalogue
+- detail pages with reviews and actors
+- filtering
+- admin dashboard
+- and ⋆✴︎˚｡⋆ **Gissa filmen** ⟡˙⋆, a quiz built from the catalogue's own data.
+
+╭────────────────────.★..─╮
+
+**LIVE DEMO:** [👉 _Movie App Mega X-Treme 3000_ 👈](https://laszloprekop.github.io/fe-11-movie-app/)
+
+╰─..★.────────────────────╯
 
 ## Stack
 
