@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getDashboard } from '../api/reports';
 import type { DashboardDto } from '../api/types';
 import ErrorBanner from '../components/ErrorBanner';
+import StatBars from '../components/StatBars';
 
 type PageState =
   | { status: 'loading' }
@@ -47,26 +48,28 @@ export default function Dashboard() {
             {state.dashboard.topRatedPerGenre.map((group) => (
               <div key={group.genre} className="mt-3">
                 <h3 className="font-bold">{group.genre}</h3>
-                <ol className="mt-1 list-inside list-decimal">
-                  {group.movies.map((movie) => (
-                    <li key={movie.id}>
-                      {movie.title} — {movie.averageRating} ({movie.reviewCount} recensioner)
-                    </li>
-                  ))}
-                </ol>
+                {/* Ratings share one scale — max 5 keeps the genres comparable. */}
+                <StatBars
+                  data={group.movies}
+                  nameKey="title"
+                  valueKey="averageRating"
+                  label="Betyg"
+                  max={5}
+                />
               </div>
             ))}
           </section>
 
           <section>
             <h2 className="text-xl font-bold">Mest aktiva skådespelare</h2>
-            <ol className="mt-2 list-inside list-decimal">
-              {state.dashboard.mostActiveActors.map((actor) => (
-                <li key={actor.id}>
-                  {actor.name} — {actor.movieCount} filmer
-                </li>
-              ))}
-            </ol>
+            <div className="mt-2">
+              <StatBars
+                data={state.dashboard.mostActiveActors}
+                nameKey="name"
+                valueKey="movieCount"
+                label="Filmer"
+              />
+            </div>
           </section>
         </div>
       )}
