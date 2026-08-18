@@ -1,18 +1,32 @@
 import { useState, type FormEvent } from "react"
-import type { GenreDto, MovieCreateDto } from "../api/types"
+import type { GenreDto, MovieCreateDto, MovieDto } from "../api/types"
 
 type Props = {
   genres: GenreDto[]
+  // Filled from the movie being edited; null means the form creates.
+  // The parent remounts the form (via key) whenever this changes.
+  initial: MovieDto | null
   // Resolves = saved (form clears). Rejects = failed (draft stays for repair).
   onSubmit: (draft: MovieCreateDto) => Promise<void>
+  onCancel: () => void
 }
 
 // Inputs always hold strings - numbers are converted at the submit boundary,
 // in one place, never per keystroke.
 const EMPTY = { title: "", year: "", genreId: "", duration: "" }
 
-export default function MovieForm({ genres, onSubmit }: Props) {
-  const [fields, setFields] = useState(EMPTY)
+export default function MovieForm({ genres, initial, onSubmit, onCancel }: Props) {
+  const editing = initial !== null
+  const [fields, setFields] = useState(
+    initial
+      ? {
+          title: initial.title,
+          year: String(initial.year),
+          genreId: "",
+          duration: String(initial.duration),
+        }
+      : EMPTY,
+  )
 
   function set(name: keyof typeof EMPTY) {
     return (e: { target: { value: string } }) =>
@@ -25,7 +39,7 @@ export default function MovieForm({ genres, onSubmit }: Props) {
       await onSubmit({
         title: fields.title.trim(),
         year: Number(fields.year),
-        genreIds: [Number(fields.genreId)],
+        genreIds: fields.genreId ? [Number(fields.genreId)] : [],
         duration: Number(fields.duration),
       })
       setFields(EMPTY)
@@ -36,7 +50,9 @@ export default function MovieForm({ genres, onSubmit }: Props) {
 
   return (
     <form onSubmit={handleSubmit} className="mt-6 grid max-w-md gap-3">
-      <h2 className="text-xl font-bold">Lägg till film</h2>
+      <h2 className="text-xl font-bold">
+        {editing ? `Redigera: ${initial.title}` : "Lägg till film"}
+      </h2>
       <label className="grid gap-1">
         Titel
         <input value={fields.title} onChange={set("title")} required className="rounded border p-2" />
@@ -47,22 +63,38 @@ export default function MovieForm({ genres, onSubmit }: Props) {
       </label>
       <label className="grid gap-1">
         Genre
-        <select value={fields.genreId} onChange={set("genreId")} required className="rounded border p-2">
-          <option value="">Välj genre…</option>
+        <select
+          value={fields.genreId}
+          onChange={set("genreId")}
+          required={!editing}
+          disabled={editing}
+          className="rounded border p-2 disabled:bg-stone-100"
+        >
+          <option value="">{editing ? initial.genre : "Välj genre…"}</option>
           {genres.map((genre) => (
             <option key={genre.id} value={genre.id}>
               {genre.name}
             </option>
           ))}
         </select>
+        {editing && (
+          <small>Genren ändras inte vid redigering - API:ets uppdatering tar inga genrer.</small>
+        )}
       </label>
       <label className="grid gap-1">
         Speltid (minuter)
         <input type="number" value={fields.duration} onChange={set("duration")} required min="1" max="1000" className="rounded border p-2" />
       </label>
-      <button type="submit" className="justify-self-start rounded bg-emerald-700 px-4 py-2 text-white">
-        Lägg till film
-      </button>
+      <div className="flex gap-3">
+        <button type="submit" className="rounded bg-emerald-700 px-4 py-2 text-white">
+          {editing ? "Spara ändringar" : "Lägg till film"}
+        </button>
+        {editing && (
+          <button type="button" onClick={onCancel} className="rounded border-2 border-stone-800 px-4 py-2">
+            Avbryt
+          </button>
+        )}
+      </div>
     </form>
   )
 }

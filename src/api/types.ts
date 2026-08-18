@@ -21,3 +21,11 @@ export type MovieCreateDto = {
   genreIds: number[]
   duration: number
 }
+
+// What PUT /api/movies/{id} expects - deliberately no genreIds: the API's
+// contract says genres do not change through an update.
+export type MovieUpdateDto = {
+  title: string
+  year: number
+  duration: number
+}
