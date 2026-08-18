@@ -1,5 +1,5 @@
 import { request } from "./client"
-import type { MovieCreateDto, MovieDto, MovieUpdateDto } from "./types"
+import type { MovieCreateDto, MovieDetailDto, MovieDto, MovieUpdateDto } from "./types"
 
 // The seam holds: same signature the stub had, real data behind it.
 export function getMovies(): Promise<MovieDto[]> {
@@ -23,4 +23,8 @@ export function updateMovie(id: number, draft: MovieUpdateDto): Promise<void> {
 
 export function deleteMovie(id: number): Promise<void> {
   return request<void>(`/api/movies/${id}`, { method: "DELETE" })
+}
+
+export function getMovieDetails(id: number): Promise<MovieDetailDto> {
+  return request<MovieDetailDto>(`/api/movies/${id}/details`)
 }

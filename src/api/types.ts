@@ -29,3 +29,32 @@ export type MovieUpdateDto = {
   year: number
   duration: number
 }
+
+export type ReviewDto = {
+  id: number
+  reviewerName: string
+  comment: string
+  rating: number
+  createdAt: string // a C# DateTime, but JSON has no dates - it arrives as an ISO string
+}
+
+export type ActorDto = {
+  id: number
+  name: string
+  birthYear: number
+}
+
+// The heavier half: MovieDto's fields plus the flattened 1:1 details and
+// both relation lists. C#'s decimal? and string? become number/string | null.
+export type MovieDetailDto = {
+  id: number
+  title: string
+  year: number
+  genre: string
+  duration: number
+  synopsis: string | null
+  language: string | null
+  budget: number | null
+  reviews: ReviewDto[]
+  actors: ActorDto[]
+}
