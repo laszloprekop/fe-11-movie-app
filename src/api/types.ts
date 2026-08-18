@@ -59,6 +59,33 @@ export type ReviewCreateDto = {
   rating: number
 }
 
+// The dashboard payload from GET /api/reports/dashboard — aggregates only,
+// computed server-side; the client renders, it never recounts.
+export type MovieRatingDto = {
+  id: number
+  title: string
+  averageRating: number
+  reviewCount: number
+}
+
+export type GenreTopMoviesDto = {
+  genre: string
+  movies: MovieRatingDto[]
+}
+
+export type ActorActivityDto = {
+  id: number
+  name: string
+  movieCount: number
+}
+
+export type DashboardDto = {
+  averageRating: number | null
+  reviewCount: number
+  topRatedPerGenre: GenreTopMoviesDto[]
+  mostActiveActors: ActorActivityDto[]
+}
+
 // The heavier half: MovieDto's fields plus the flattened 1:1 details and
 // both relation lists. C#'s decimal? and string? become number/string | null.
 export type MovieDetailDto = {
