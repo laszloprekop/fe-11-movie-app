@@ -7,3 +7,17 @@ export type MovieDto = {
   genre: string
   duration: number
 }
+
+export type GenreDto = {
+  id: number
+  name: string
+}
+
+// What POST /api/movies expects. Note: genres travel as ids here but come
+// back flattened to one string on MovieDto - two shapes, one movie.
+export type MovieCreateDto = {
+  title: string
+  year: number
+  genreIds: number[]
+  duration: number
+}
