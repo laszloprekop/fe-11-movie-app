@@ -3,7 +3,8 @@ import type { GenreDto, MovieCreateDto } from "../api/types"
 
 type Props = {
   genres: GenreDto[]
-  onSubmit: (draft: MovieCreateDto) => void
+  // Resolves = saved (form clears). Rejects = failed (draft stays for repair).
+  onSubmit: (draft: MovieCreateDto) => Promise<void>
 }
 
 // Inputs always hold strings - numbers are converted at the submit boundary,
@@ -18,14 +19,19 @@ export default function MovieForm({ genres, onSubmit }: Props) {
       setFields({ ...fields, [name]: e.target.value })
   }
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    onSubmit({
-      title: fields.title.trim(),
-      year: Number(fields.year),
-      genreIds: [Number(fields.genreId)],
-      duration: Number(fields.duration),
-    })
+    try {
+      await onSubmit({
+        title: fields.title.trim(),
+        year: Number(fields.year),
+        genreIds: [Number(fields.genreId)],
+        duration: Number(fields.duration),
+      })
+      setFields(EMPTY)
+    } catch {
+      // The parent shows the error; the draft stays so it can be repaired.
+    }
   }
 
   return (

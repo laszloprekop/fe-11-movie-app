@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { getMovies } from "../api/movies"
+import { createMovie, getMovies } from "../api/movies"
 import { getGenres } from "../api/genres"
 import type { GenreDto, MovieCreateDto, MovieDto } from "../api/types"
 import ErrorBanner from "../components/ErrorBanner"
@@ -11,7 +11,7 @@ import MovieForm from "../components/MovieForm"
 type PageState =
   | { status: "loading" }
   | { status: "error"; error: unknown }
-  | { status: "ready"; movies: MovieDto[]; genres: GenreDto[] }
+  | { status: "ready"; movies: MovieDto[]; genres: GenreDto[]; saveError?: unknown }
 
 export default function Home() {
   const [state, setState] = useState<PageState>({ status: "loading" })
@@ -30,9 +30,15 @@ export default function Home() {
     }
   }, [])
 
-  function handleCreate(draft: MovieCreateDto) {
-    // Stub - Step 14 sends this through the door.
-    console.log("would POST /api/movies", draft)
+  async function handleCreate(draft: MovieCreateDto) {
+    if (state.status !== "ready") return
+    try {
+      const created = await createMovie(draft)
+      setState({ ...state, movies: [...state.movies, created], saveError: undefined })
+    } catch (error) {
+      setState({ ...state, saveError: error })
+      throw error // rethrown so the form keeps its draft
+    }
   }
 
   return (
@@ -52,6 +58,7 @@ export default function Home() {
               </li>
             ))}
           </ul>
+          {state.saveError !== undefined && <ErrorBanner error={state.saveError} />}
           <MovieForm genres={state.genres} onSubmit={handleCreate} />
         </>
       )}
