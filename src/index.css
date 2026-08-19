@@ -38,6 +38,36 @@ h1::after {
   }
 }
 
+/* Narrow screens: the stage stacks — sleeve, tape, then the panel. The tape
+   rides in the flow, horizontal in both states; the morph is a wide-stage
+   luxury. */
+@media (max-width: 1080px) {
+  .quiz-stage,
+  .quiz-stage.is-settled {
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .tape-wrap,
+  .is-settled .tape-wrap {
+    position: static;
+    margin-top: 0;
+    flex: none;
+    transform: rotate(-4deg);
+  }
+
+  .tape-space {
+    display: none;
+  }
+}
+
+@media (max-width: 500px) {
+  .tape-wrap,
+  .is-settled .tape-wrap {
+    zoom: 0.75;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   h1::after {
     animation: none;
