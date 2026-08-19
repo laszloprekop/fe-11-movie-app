@@ -205,7 +205,7 @@ export default function Quiz() {
     return (
       <div className="studio">
         <h1 className="sr-only">Gissa filmen</h1>
-        <div className="slipcase aspect-[380/483] w-[460px] max-w-full">
+        <div className="slipcase min-h-[var(--case-min)] w-[460px] max-w-full">
           <div className="slipcase-band px-6 pt-7 pb-6">
             <p className="vhs-display text-5xl">GISSA FILMEN</p>
             <p className="vhs-label mt-2 opacity-85">Home Entertainment</p>

@@ -17,6 +17,8 @@
   --stripe-3: #e23d28;
   --stripe-4: #b01e5e;
   --stripe-5: #4e2a7e;
+  /* one box, every screen: the landing and playing sleeves share this floor */
+  --case-min: 645px;
 }
 
 /* The prompt is the signature: every page title reads as a command. */
@@ -352,10 +354,13 @@ button.on-card {
   z-index: 1;
   width: 460px;
   max-width: 100%;
+  min-height: var(--case-min);
   transition: width 0.6s ease, transform 0.6s ease;
 }
 .is-settled .quiz-case {
   width: 400px;
+  /* the reveal face is a shorter box by design (board 03) */
+  min-height: 0;
   transform: rotate(-2deg);
 }
 
