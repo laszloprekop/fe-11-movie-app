@@ -1,4 +1,4 @@
-import { useReducer, useState, type SubmitEvent } from "react"
+import { useEffect, useReducer, useState, type SubmitEvent } from "react"
 import { getMovieDetails, getMovies } from "../api/movies"
 import type { MovieDetailDto } from "../api/types"
 import ErrorBanner from "../components/ErrorBanner"
@@ -6,10 +6,12 @@ import {
   buildClues,
   drawRound,
   isCorrectGuess,
+  longestWinStreak,
   roundScore,
   sessionLength,
   type QuizMovie,
 } from "../domain/quiz"
+import { readBest, writeBest } from "../domain/storage"
 
 // The page is where API words become domain words — only this mapper knows
 // the DTO, so the quiz rules survive an API reshape untouched.
@@ -129,6 +131,26 @@ export default function Quiz() {
   const [state, dispatch] = useReducer(quizReducer, { phase: "idle" })
   const [draft, setDraft] = useState("")
 
+  // Lazy initial state: useState(readBest) reads storage once, on mount —
+  // useState(readBest()) would read it again on every render.
+  const [best, setBest] = useState(readBest)
+
+  // localStorage is an external system, so syncing it is effect work — the
+  // one effect on this page. The early return doubles as the loop guard:
+  // an effect that always setStates on its own dependency never settles.
+  useEffect(() => {
+    if (state.phase !== "done") return
+    const total = state.scores.reduce((sum, score) => sum + score, 0)
+    const streak = longestWinStreak(state.scores)
+    if (total <= best.total && streak <= best.streak) return
+    const next = {
+      total: Math.max(best.total, total),
+      streak: Math.max(best.streak, streak),
+    }
+    writeBest(next)
+    setBest(next)
+  }, [state, best])
+
   function handleGuess(e: SubmitEvent) {
     e.preventDefault()
     dispatch({ type: "guessed", guess: draft })
@@ -182,6 +204,11 @@ export default function Quiz() {
           Fem omgångar, en film per omgång. Första ledtråden är gratis — varje
           ny kostar poäng, varje fel gissning också.
         </p>
+        {best.total > 0 && (
+          <p className="mt-2">
+            Rekord: <strong>{best.total} poäng</strong> · Bästa svit: {best.streak}
+          </p>
+        )}
         <button className="mt-4" onClick={startSession} disabled={state.phase === "loading"}>
           {state.phase === "loading" ? "Blandar filmerna…" : "Börja kvällens fem"}
         </button>
@@ -218,7 +245,9 @@ export default function Quiz() {
           <p className="font-bold">Kvällens fem är spelade!</p>
           <p className="mt-1">
             Totalt: <strong>{total} poäng</strong>
+            {total >= best.total && total > 0 && <> — nytt rekord!</>}
           </p>
+          <p>Bästa svit i kvällens fem: {longestWinStreak(state.scores)}</p>
           <ol className="mt-2">
             {state.scores.map((score, index) => (
               <li key={index}>

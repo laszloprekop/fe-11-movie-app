@@ -55,6 +55,18 @@ export function drawRound(
   return { movieId: pool[index], rest: pool.toSpliced(index, 1) }
 }
 
+// The best streak of a finished session, read straight off the score list:
+// invariant 1 guarantees a win never pays 0, so "positive score" *is* "won".
+export function longestWinStreak(scores: number[]): number {
+  let best = 0
+  let run = 0
+  for (const score of scores) {
+    run = score > 0 ? run + 1 : 0
+    best = Math.max(best, run)
+  }
+  return best
+}
+
 // The domain's own movie shape — the quiz rules survive an API reshape
 // because only the page that fetches knows the DTO. All display strings are
 // built here so the ladder is testable without a renderer.

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { buildClues, drawRound, isCorrectGuess, maskSynopsis, normalize, roundScore, sessionLength } from "./quiz"
+import { buildClues, drawRound, isCorrectGuess, longestWinStreak, maskSynopsis, normalize, roundScore, sessionLength } from "./quiz"
 
 describe("normalize", () => {
   it("lowercases, trims and collapses whitespace", () => {
@@ -165,5 +165,19 @@ describe("the session pool", () => {
       pool = draw.rest
     }
     expect(new Set(seen).size).toBe(seen.length)
+  })
+})
+
+describe("longestWinStreak", () => {
+  it("reads the wins straight off the score list — zero means lost", () => {
+    expect(longestWinStreak([600, 550, 0, 900, 1050])).toBe(2)
+  })
+
+  it("finds the streak wherever it sits", () => {
+    expect(longestWinStreak([0, 100, 250, 400, 0])).toBe(3)
+  })
+
+  it("scores an all-loss session as zero", () => {
+    expect(longestWinStreak([0, 0, 0])).toBe(0)
   })
 })
