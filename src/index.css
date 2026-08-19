@@ -190,6 +190,13 @@ p.alert {
   font-family: "Permanent Marker", cursive;
 }
 
+/* Print sets its own rhythm: the terminal shell's 25px paragraph margins
+   (terminal.css) stay outside the box — on the slipcase, spacing comes from
+   the layout gaps alone. */
+.slipcase p {
+  margin: 0;
+}
+
 /* The slipcase: cream card, ink print, hard offset shadow — a thing, not a panel.
    A physical box keeps its shape: each screen pins the board's aspect-ratio
    (soft — content can still stretch it), and the column lets the body fill. */
