@@ -443,7 +443,7 @@ export default function Quiz() {
           {settled ? (
             <>
               {won ? (
-                <p>
+                <p className="burst">
                   <span className="sticker">RÄTT! +{prize} POÄNG</span>
                 </p>
               ) : (

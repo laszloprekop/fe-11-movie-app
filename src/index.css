@@ -56,6 +56,11 @@ h1::after {
   .label-write::after {
     animation: none;
   }
+
+  .burst::before,
+  .burst::after {
+    animation: none;
+  }
 }
 
 /* Inverse video marks the current place — terminal selection, not underline. */
@@ -323,6 +328,63 @@ button.on-card {
 /* the open round's panel keeps the tape's flight path clear */
 .tape-space {
   height: 270px;
+}
+
+/* The win fires simplified fireworks off the sticker — dots and stars in
+   dark golden tones, one burst, all box-shadow and text-shadow. */
+.burst {
+  position: relative;
+  display: inline-block;
+}
+.burst::before,
+.burst::after {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
+  opacity: 0;
+}
+.burst::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  margin: -3px;
+  border-radius: 50%;
+  animation: burst-dots 0.9s ease-out forwards;
+}
+.burst::after {
+  content: "✦";
+  margin: -12px 0 0 -10px;
+  font-size: 20px;
+  color: #c9950c;
+  animation: burst-stars 0.9s ease-out forwards;
+}
+@keyframes burst-dots {
+  0% {
+    opacity: 1;
+    box-shadow:
+      0 0 0 #c9950c, 0 0 0 #a87a08, 0 0 0 #c9950c, 0 0 0 #a87a08,
+      0 0 0 #c9950c, 0 0 0 #a87a08, 0 0 0 #c9950c, 0 0 0 #a87a08;
+  }
+  100% {
+    opacity: 0;
+    box-shadow:
+      -78px -52px 0 #c9950c, 66px -64px 0 #a87a08, 90px 22px 0 #c9950c,
+      -84px 30px 0 #a87a08, 20px -88px 0 #c9950c, -30px 78px 0 #a87a08,
+      64px 62px 0 #c9950c, -60px -20px 0 #a87a08;
+  }
+}
+@keyframes burst-stars {
+  0% {
+    opacity: 1;
+    transform: scale(0.4);
+    text-shadow: 0 0 #a87a08, 0 0 #c9950c;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.1) rotate(20deg);
+    text-shadow: -60px -40px #a87a08, 55px -50px #c9950c;
+  }
 }
 
 /* The terminal status readout. */
