@@ -43,6 +43,10 @@ h1::after {
     animation: none;
     opacity: 0;
   }
+
+  .tape-wrap {
+    animation: none;
+  }
 }
 
 /* Inverse video marks the current place — terminal selection, not underline. */
@@ -247,68 +251,120 @@ p.alert {
 .status span { opacity: 0.6; }
 .status .hot { color: var(--cta); }
 
-/* The reveal: the tape slides out from behind the sleeve. */
+/* The reveal: the tape stands on end and slides out from behind the sleeve. */
 .reveal-stage {
   position: relative;
   /* reserve the tape's overhang — absolute children are invisible to flex */
-  padding-right: 170px;
+  padding-right: 190px;
 }
 .reveal-stage .slipcase {
   position: relative;
   z-index: 1;
   transform: rotate(2deg);
 }
-.tape {
+/* The wrapper owns place + slide; the cassette inside stays a flat 420×210
+   drawing, stood upright with one rotation — the board's exact geometry. */
+.tape-wrap {
   position: absolute;
   z-index: 0;
   top: 50%;
-  right: 0;
+  left: 330px;
+  width: 247px;
+  height: 437px;
+  display: grid;
+  place-items: center;
+  transform: translateY(-50%);
+  animation: tape-out 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes tape-out {
+  from {
+    transform: translateY(-50%) translateX(-170px);
+  }
+  to {
+    transform: translateY(-50%) translateX(0);
+  }
+}
+.tape {
+  position: relative;
   width: 420px;
   height: 210px;
-  transform: translateY(-50%) rotate(-1deg);
+  transform: rotate(95deg);
   background: var(--vhs-shell);
   border-radius: 5px;
-  box-shadow: 10px 12px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 10px 4px 0 3px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+/* the studio light falls across the shell — one diagonal gradient */
+.tape::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(250deg, rgba(0, 0, 0, 0.55) 10%, transparent 45%);
+  pointer-events: none;
 }
 .tape-strip {
+  position: relative;
   height: 26px;
   border-radius: 5px 5px 0 0;
-  background: var(--cta);
+  background: var(--accent);
+}
+.tape-strip::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 18px;
+  width: 120px;
+  height: 12px;
+  background: rgba(236, 234, 229, 0.27);
 }
 .tape .reel {
   position: absolute;
+  border-radius: 50%;
+  /* spool stack in one gradient: hub, ring, disc — the boards' reel colors */
+  background: radial-gradient(circle, #41403f 0 9px, #4a4947 9px 26px, #0f161a 26px 100%);
+}
+.tape .reel.left {
+  top: 66px;
+  left: 22px;
+  width: 111px;
+  height: 111px;
+}
+.tape .reel.right {
   top: 80px;
   right: 32px;
   width: 84px;
   height: 84px;
-  border-radius: 50%;
-  background: var(--vhs-card);
-  display: grid;
-  place-items: center;
-}
-.tape .reel::after {
-  content: "";
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  /* spool: ink ring with a cream hub, one gradient */
-  background: radial-gradient(circle, var(--vhs-card) 0 9px, var(--vhs-ink) 9px 100%);
 }
 .tape-label {
   position: absolute;
-  top: 56px;
+  z-index: 1;
+  top: 58px;
   left: 118px;
   width: 190px;
   height: 128px;
   background: var(--vhs-card);
-  border-top: 14px solid #7a2731;
-  border-bottom: 10px solid var(--stripe-2);
+  border-top: 16px solid #7a2731;
+  border-bottom: 12px solid #f0602f;
   color: var(--vhs-ink);
   text-align: center;
-  font-size: 17px;
+  font-size: 18px;
   line-height: 1.2;
   padding: 8px 6px;
   overflow: hidden;
+}
+/* ruled lines under the handwriting, like a real rental label */
+.tape-label::after {
+  content: "";
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 8px;
+  height: 26px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(58, 167, 187, 0.45) 0 1px,
+    transparent 1px 12px
+  );
 }
 
 /* The finale: a rental receipt of tape spines. */

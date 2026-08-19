@@ -403,11 +403,14 @@ export default function Quiz() {
     <div className="studio">
       <div className="quiz-grid">
         <div className="reveal-stage">
-          <div className="tape" aria-hidden="true">
-            <div className="tape-strip" />
-            <div className="reel" />
-            <div className="tape-label">
-              <span className="vhs-hand">{state.movie.title}</span>
+          <div className="tape-wrap" aria-hidden="true">
+            <div className="tape">
+              <div className="tape-strip" />
+              <div className="reel left" />
+              <div className="reel right" />
+              <div className="tape-label">
+                <span className="vhs-hand">{state.movie.title}</span>
+              </div>
             </div>
           </div>
           <div className="slipcase aspect-[400/486] w-[400px] max-w-full">
