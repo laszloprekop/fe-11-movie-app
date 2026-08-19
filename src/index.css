@@ -166,7 +166,7 @@ p.alert {
   flex-direction: column;
   align-items: center;
   background:
-    radial-gradient(ellipse 34% 3% at 50% 82%, rgba(236, 234, 229, 0.28), transparent 70%),
+    radial-gradient(ellipse 46% 5% at 50% 82%, rgba(236, 234, 229, 0.16), transparent 70%),
     radial-gradient(ellipse 30% 55% at 50% 0%, rgba(236, 234, 229, 0.10), transparent 65%),
     radial-gradient(ellipse 70% 40% at 50% 55%, rgba(236, 234, 229, 0.05), transparent 70%),
     radial-gradient(ellipse 110% 110% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.55)),
@@ -202,7 +202,10 @@ p.alert {
   box-shadow: 10px 12px 0 rgba(0, 0, 0, 0.55);
 }
 .slipcase-band {
-  background: var(--vhs-band);
+  /* the studio light grazes the box: a faint sheen in the top-left corner */
+  background:
+    radial-gradient(ellipse 55% 85% at 10% 0%, rgba(236, 234, 229, 0.09), transparent 60%),
+    var(--vhs-band);
   color: var(--vhs-card);
   text-align: center;
 }
