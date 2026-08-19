@@ -6,6 +6,17 @@
 /* App idioms on top of terminal.css — same vocabulary, a few extra words. */
 :root {
   --danger: #cf6a6a;
+  /* Gissa filmen: the film is a physical object — VHS slipcase print colors. */
+  --cta: #3aa7bb;
+  --vhs-card: #f0ead9;
+  --vhs-ink: #1a1714;
+  --vhs-band: #141210;
+  --vhs-shell: #272420;
+  --stripe-1: #f2b70a;
+  --stripe-2: #f0810f;
+  --stripe-3: #e23d28;
+  --stripe-4: #b01e5e;
+  --stripe-5: #4e2a7e;
 }
 
 /* The prompt is the signature: every page title reads as a command. */
