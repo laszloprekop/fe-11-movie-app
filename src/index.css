@@ -121,6 +121,20 @@ nav a.active {
   color: var(--background);
 }
 
+/* The quiz wears its stripes in the nav — a slipcase swatch as its icon. */
+nav a.quiz-link::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+  background: linear-gradient(
+    to bottom,
+    var(--stripe-1) 0 20%, var(--stripe-2) 20% 40%, var(--stripe-3) 40% 60%,
+    var(--stripe-4) 60% 80%, var(--stripe-5) 80% 100%
+  );
+}
+
 /* Buttons follow the terminal's accent; these two words retune it. */
 button.danger {
   --accent: var(--danger);

@@ -8,7 +8,12 @@ export default function Layout() {
           Hem
         </NavLink>
         <NavLink to="/dashboard">Dashboard</NavLink>
-        <NavLink to="/quiz">Gissa filmen</NavLink>
+        <NavLink
+          to="/quiz"
+          className={({ isActive }) => (isActive ? "quiz-link active" : "quiz-link")}
+        >
+          Gissa filmen
+        </NavLink>
       </nav>
       <main className="p-4">
         <Outlet />
