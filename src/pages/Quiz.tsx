@@ -205,7 +205,7 @@ export default function Quiz() {
     return (
       <div className="studio">
         <h1 className="sr-only">Gissa filmen</h1>
-        <div className="slipcase aspect-[380/483] w-[380px] max-w-full">
+        <div className="slipcase aspect-[380/483] w-[460px] max-w-full">
           <div className="slipcase-band px-6 pt-7 pb-6">
             <p className="vhs-display text-5xl">GISSA FILMEN</p>
             <p className="vhs-label mt-2 opacity-85">Home Entertainment</p>
@@ -231,7 +231,7 @@ export default function Quiz() {
                 {state.phase === "loading" ? "Blandar filmerna…" : "Börja kvällens fem"}
               </button>
             </div>
-            <div className="mt-auto grid justify-items-center gap-2 pt-4">
+            <div className="mt-auto grid justify-items-center gap-0.5 pt-4">
               <p className="flex items-center gap-2">
                 <span className="vhs-display text-2xl">VHS</span>
                 <span className="font-mono text-[9px] opacity-70">
