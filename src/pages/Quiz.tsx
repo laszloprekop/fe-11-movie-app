@@ -75,6 +75,8 @@ function bank(state: Playing) {
 }
 
 // The reducer stores facts; every rule it needs lives in domain/quiz.ts.
+// The dice never roll in here: a reducer must be pure, so the draw happens
+// in the handler and arrives as an action.
 function quizReducer(state: QuizState, action: QuizAction): QuizState {
   switch (action.type) {
     case "loadStarted":
@@ -201,144 +203,269 @@ export default function Quiz() {
 
   if (state.phase === "idle" || state.phase === "loading") {
     return (
-      <>
-        <h1 className="text-2xl font-bold">Gissa filmen</h1>
-        <p className="mt-2 max-w-xl">
-          Fem omgångar, en film per omgång. Första ledtråden är gratis — varje
-          ny kostar poäng, varje fel gissning också.
-        </p>
+      <div className="studio">
+        <h1 className="sr-only">Gissa filmen</h1>
+        <div className="slipcase w-[380px] max-w-full">
+          <div className="slipcase-band px-6 pt-7 pb-6">
+            <p className="vhs-display text-5xl">GISSA FILMEN</p>
+            <p className="vhs-label mt-2 opacity-85">Video Cassette</p>
+          </div>
+          <div className="stripes tall" />
+          <div className="grid justify-items-center gap-4 px-6 py-7 text-center">
+            <span className="sticker">NYHET!</span>
+            <p className="vhs-label">Kvällens fem</p>
+            <p className="max-w-[38ch] text-xs opacity-80">
+              Fem omgångar, en film per omgång — noll nåd. Första ledtråden är
+              gratis; varje ny kostar poäng, varje fel gissning också.
+            </p>
+            <p className="flex items-center gap-2">
+              <span className="vhs-display text-2xl">VHS</span>
+              <span className="font-mono text-[9px] opacity-70">
+                MOVIE APP MEGA X-TREME 3000 · T-120
+              </span>
+            </p>
+          </div>
+        </div>
         {best.total > 0 && (
-          <p className="mt-2">
+          <p className="rekord mt-7 font-mono">
             Rekord: <strong>{best.total} poäng</strong> · Bästa svit: {best.streak}
           </p>
         )}
         <button className="mt-4" onClick={startSession} disabled={state.phase === "loading"}>
           {state.phase === "loading" ? "Blandar filmerna…" : "Börja kvällens fem"}
         </button>
-      </>
+      </div>
     )
   }
 
   if (state.phase === "empty") {
     return (
-      <>
+      <div className="studio">
         <h1 className="text-2xl font-bold">Gissa filmen</h1>
-        <p className="mt-2">Katalogen är tom — lägg till filmer, kom sen tillbaka.</p>
-      </>
+        <p className="mt-4">Katalogen är tom — lägg till filmer, kom sen tillbaka.</p>
+      </div>
     )
   }
 
   if (state.phase === "error") {
     return (
-      <>
+      <div className="studio">
         <h1 className="text-2xl font-bold">Gissa filmen</h1>
-        <div className="mt-2 max-w-xl">
+        <div className="mt-4 w-full max-w-xl">
           <ErrorBanner error={state.error} />
         </div>
-      </>
+      </div>
     )
   }
 
   if (state.phase === "done") {
     const total = state.scores.reduce((sum, score) => sum + score, 0)
+    const isRecord = total > 0 && total >= best.total
     return (
-      <>
-        <h1 className="text-2xl font-bold">Gissa filmen</h1>
-        <section className="mt-4 max-w-xl border p-3">
-          <p className="font-bold">Kvällens fem är spelade!</p>
-          <p className="mt-1">
-            Totalt: <strong>{total} poäng</strong>
-            {total >= best.total && total > 0 && <> — nytt rekord!</>}
-          </p>
-          <p>Bästa svit i kvällens fem: {longestWinStreak(state.scores)}</p>
-          <ol className="mt-2">
-            {state.scores.map((score, index) => (
-              <li key={index}>
-                Omgång {index + 1}: {score} poäng
-              </li>
-            ))}
-          </ol>
-          <button className="mt-3" onClick={startSession}>
-            Spela igen
-          </button>
-        </section>
-      </>
+      <div className="studio">
+        <h1 className="sr-only">Gissa filmen</h1>
+        <div className="slipcase w-[430px] max-w-full">
+          <div className="slipcase-band px-6 pt-5 pb-4">
+            <p className="vhs-display text-3xl">SLUTRESULTAT</p>
+            <p className="vhs-label mt-1 opacity-85">Kvällens fem är spelade</p>
+          </div>
+          <div className="stripes thin" />
+          <div className="px-8 py-6 font-mono">
+            <p className="stars">* * * * * * * * * * * * *</p>
+            <ol className="mt-3 grid gap-2.5">
+              {state.scores.map((score, index) => (
+                // The round number is the identity here, so the index is for
+                // once the honest key.
+                <li key={index} className="spine">
+                  <span className="cap" />
+                  <span className="spine-label">
+                    <span>
+                      OMGÅNG {index + 1} · {state.played[index].toUpperCase()}
+                    </span>
+                    <strong>{score}</strong>
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <p className="stars mt-3">* * * * * * * * * * * * *</p>
+            <div className="total-row mt-4">
+              <span className="vhs-label">Totalt</span>
+              <span className="vhs-display text-3xl">{total} POÄNG</span>
+              {isRecord && <span className="sticker">NYTT REKORD!</span>}
+            </div>
+            <p className="stars mt-4">*** TACK FÖR IKVÄLL ***</p>
+          </div>
+        </div>
+        <p className="rekord mt-7 font-mono">
+          Rekord: <strong>{best.total} poäng</strong> · Bästa svit: {best.streak}
+        </p>
+        <button className="mt-4" onClick={startSession}>
+          Spela igen
+        </button>
+      </div>
     )
   }
 
   const clues = buildClues(state.movie)
   // The live prize is derived, never stored: "what a correct guess pays right
-  // now" is a question for roundScore, asked on every render — and it counts
-  // the streak: what a win pays right now includes the bonus you stand on.
+  // now" is a question for roundScore, asked on every render.
   const prize = roundScore(
     { won: true, cluesRevealed: state.revealed, wrongGuesses: state.wrongGuesses },
     state.streak,
   )
 
+  if (state.outcome === "open") {
+    return (
+      <div className="studio">
+        <div className="quiz-grid">
+          <div className="slipcase w-[460px] max-w-full">
+            <div className="slipcase-band px-6 pt-3 pb-3">
+              <p className="vhs-label">Video Cassette</p>
+            </div>
+            <div className="stripes" />
+            <div className="px-7 pt-5 pb-4">
+              <p className="vhs-display text-2xl">OKÄND FILM — T-{state.movie.duration}</p>
+              <div className="mt-3">
+                {clues.slice(0, state.revealed).map((clue) => (
+                  <div key={clue.label} className="spec-row">
+                    <span className="spec-label">{clue.label}</span>
+                    <span>{clue.value}</span>
+                  </div>
+                ))}
+                {clues.slice(state.revealed).map((clue, index) => (
+                  <div key={clue.label} className="spec-row locked">
+                    <span className="spec-label">{clue.label}</span>
+                    {index === 0 ? (
+                      <button className="kop" onClick={() => dispatch({ type: "clueBought" })}>
+                        KÖP −{clue.cost}
+                      </button>
+                    ) : (
+                      <span className="spec-price">−{clue.cost}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <p className="small-print mt-4">
+                Otillåten gissning utan poängavdrag är förbjuden enligt husets regler.
+                Ledtrådar säljs styckvis. Ingen ånger. Svit bryts vid uppgivande.
+              </p>
+            </div>
+          </div>
+          <div className="w-[400px] max-w-full">
+            <h1 className="text-2xl font-bold">Gissa filmen</h1>
+            <div className="status mt-6 font-mono">
+              <div>
+                <span>OMGÅNG</span>
+                <strong>
+                  {state.scores.length + 1} AV {state.totalRounds}
+                </strong>
+              </div>
+              <div>
+                <span>VINST JUST NU</span>
+                <strong className="hot">{prize} POÄNG</strong>
+              </div>
+              <div>
+                <span>SVIT</span>
+                <strong>{state.streak > 0 ? state.streak : "—"}</strong>
+              </div>
+              <div>
+                <span>FEL GISSNINGAR</span>
+                <strong>{state.wrongGuesses}</strong>
+              </div>
+            </div>
+            <form onSubmit={handleGuess} className="mt-6 grid gap-3">
+              <input
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                placeholder="Vilken film är det?"
+                aria-label="Din gissning"
+                required
+              />
+              <div className="flex gap-3">
+                <button type="submit">Gissa</button>
+                <button type="button" className="muted" onClick={() => dispatch({ type: "gaveUp" })}>
+                  Ge upp
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // round settled: the box turns around, the tape comes out
+  const won = state.outcome === "won"
   return (
-    <>
-      <h1 className="text-2xl font-bold">Gissa filmen</h1>
-      <p className="mt-2">
-        Omgång {state.scores.length + 1} av {state.totalRounds} · Vinst just nu:{" "}
-        <strong>{prize} poäng</strong>
-        {state.streak > 0 && <> · Svit: {state.streak}</>}
-        {state.wrongGuesses > 0 && <> · Fel gissningar: {state.wrongGuesses}</>}
-      </p>
-      <ol className="mt-4 grid max-w-xl gap-3">
-        {clues.slice(0, state.revealed).map((clue) => (
-          <li key={clue.label} className="border p-3">
-            <p className="font-bold">{clue.label}</p>
-            <p>{clue.value}</p>
-          </li>
-        ))}
-      </ol>
-      {state.outcome === "open" ? (
-        <>
-          {state.revealed < clues.length && (
-            <button className="mt-4" onClick={() => dispatch({ type: "clueBought" })}>
-              Köp nästa ledtråd (−{clues[state.revealed].cost} poäng)
-            </button>
+    <div className="studio">
+      <div className="quiz-grid">
+        <div className="reveal-stage">
+          <div className="tape" aria-hidden="true">
+            <div className="tape-strip" />
+            <div className="reel" />
+            <div className="tape-label">
+              <span className="vhs-hand">{state.movie.title}</span>
+            </div>
+          </div>
+          <div className="slipcase w-[400px] max-w-full">
+            <div className="slipcase-band px-6 pt-8 pb-7">
+              <p className="vhs-display text-4xl">{state.movie.title.toUpperCase()}</p>
+              <p className="vhs-label mt-2 opacity-85">
+                {state.movie.year} · {state.movie.genre} · {state.movie.duration} min
+              </p>
+            </div>
+            <div className="stripes tall" />
+            <div className="grid justify-items-center gap-3 px-6 py-5 text-center">
+              {state.movie.synopsis && (
+                <p className="max-w-[44ch] text-xs opacity-80">{state.movie.synopsis}</p>
+              )}
+              <p className="vhs-label">
+                {state.movie.actors.length > 0 ? state.movie.actors.join(" · ") : "Okänd ensemble"}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="w-[400px] max-w-full">
+          {won ? (
+            <p>
+              <span className="sticker">RÄTT! +{prize} POÄNG</span>
+            </p>
+          ) : (
+            <p className="text-lg font-bold">Du gav upp — 0 poäng.</p>
           )}
-          <form onSubmit={handleGuess} className="mt-4 flex max-w-xl gap-2">
-            <input
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              placeholder="Vilken film är det?"
-              aria-label="Din gissning"
-              required
-              className="grow"
-            />
-            <button type="submit">Gissa</button>
-            <button
-              type="button"
-              className="muted"
-              onClick={() => dispatch({ type: "gaveUp" })}
-            >
-              Ge upp
-            </button>
-          </form>
-        </>
-      ) : (
-        <section className="mt-4 max-w-xl border p-3">
-          <p className="font-bold">
-            {state.outcome === "won"
-              ? `Rätt! ${prize} poäng.`
-              : "Du gav upp — 0 poäng."}
-          </p>
-          <p className="mt-1">
-            Filmen var <strong>{state.movie.title}</strong> ({state.movie.year}).
-          </p>
+          <div className="mt-6 font-mono">
+            <p className="text-sm opacity-60">FILMEN VAR:</p>
+            <p className="mt-1 text-lg font-bold">
+              {state.movie.title} ({state.movie.year})
+            </p>
+          </div>
+          <div className="status mt-6 font-mono">
+            <div>
+              <span>OMGÅNG</span>
+              <strong>
+                {state.scores.length + 1} AV {state.totalRounds}
+              </strong>
+            </div>
+            <div>
+              <span>DENNA OMGÅNG</span>
+              <strong className="hot">{won ? prize : 0} POÄNG</strong>
+            </div>
+            <div>
+              <span>SVIT</span>
+              <strong>{won ? state.streak + 1 : 0}</strong>
+            </div>
+          </div>
           {state.scores.length + 1 < state.totalRounds ? (
-            <button className="mt-3" onClick={nextRound}>
+            <button className="mt-6" onClick={nextRound}>
               Nästa omgång
             </button>
           ) : (
-            <button className="mt-3" onClick={() => dispatch({ type: "sessionEnded" })}>
+            <button className="mt-6" onClick={() => dispatch({ type: "sessionEnded" })}>
               Visa slutresultat
             </button>
           )}
-        </section>
-      )}
-    </>
+        </div>
+      </div>
+    </div>
   )
 }
