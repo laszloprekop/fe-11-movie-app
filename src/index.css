@@ -85,8 +85,10 @@ h1::after {
   }
 
   /* the block cursor stays as a static field marker */
-  .label-write::after {
+  .label-cursor,
+  .label-cursor.delayed {
     animation: none;
+    opacity: 1;
   }
 
   .burst::before,
@@ -566,7 +568,7 @@ button.on-card {
   border-bottom: 12px solid #f0602f;
   color: var(--vhs-ink);
   text-align: center;
-  font-size: 18px;
+  font-size: 22.5px;
   line-height: 1.2;
   padding: 8px 6px;
   overflow: hidden;
@@ -608,8 +610,7 @@ button.on-card {
   color: var(--vhs-ink);
   caret-color: var(--vhs-ink);
 }
-.label-write::after {
-  content: "▊";
+.label-cursor {
   position: absolute;
   left: 50%;
   top: 6px;
@@ -617,10 +618,24 @@ button.on-card {
   font-size: 18px;
   color: var(--vhs-ink);
   pointer-events: none;
-  animation: blink 1.2s steps(2, start) infinite;
+  animation: cursor-blink 1.2s steps(2, start) infinite;
 }
-.label-write:has(.hand-input:focus)::after,
-.label-write:has(.hand-input:not(:placeholder-shown))::after {
+/* after a wrong guess the cursor holds its breath until the stamp fades */
+.label-cursor.delayed {
+  opacity: 0;
+  animation-delay: 2.2s;
+}
+@keyframes cursor-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+.label-write:has(.hand-input:focus) .label-cursor,
+.label-write:has(.hand-input:not(:placeholder-shown)) .label-cursor {
   display: none;
 }
 

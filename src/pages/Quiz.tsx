@@ -444,6 +444,15 @@ export default function Quiz() {
                     rows={3}
                     className="hand-input"
                   />
+                  {/* keyed by the miss count: each stamp resets the cursor's
+                      clock, so it reappears as the stamp fades */}
+                  <span
+                    key={state.wrongGuesses}
+                    className={state.wrongGuesses > 0 ? "label-cursor delayed" : "label-cursor"}
+                    aria-hidden="true"
+                  >
+                    ▊
+                  </span>
                 </form>
               )}
             </div>
