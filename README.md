@@ -4,10 +4,10 @@ A React client for [MovieApi-CA](https://github.com/laszloprekop/MovieApi-CA)
 Övning 11 in the Lexicon/LTU frontend course.
 
 - full CRUD over the movie catalogue
-- detail pages with reviews and actors
-- filtering
-- admin dashboard
-- and ⋆✴︎˚｡⋆ **Gissa filmen** ⟡˙⋆, a quiz built from the catalogue's own data.
+- search and genre filter, with the URL as the filter state
+- detail pages with reviews and actors — each actor with their role
+- admin dashboard with charts
+- and ⋆✴︎˚｡⋆ **Gissa filmen** ⟡˙⋆, a quiz built from the catalogue's own data (in progress)
 
 ╭────────────────────.★..─╮
 
@@ -15,20 +15,47 @@ A React client for [MovieApi-CA](https://github.com/laszloprekop/MovieApi-CA)
 
 ╰─..★.────────────────────╯
 
-> ⚠️ **The live demo is not yet backed by the server database.** The client is deployed, but the
-> API is not hosted yet — so the live site currently greets you with its (honest) configuration
-> banner instead of the catalogue. Everything below runs in full against a local backend; the
-> hosted API is next on the roadmap.
+The live demo is **fully deployed**: this client on GitHub Pages, talking over HTTPS to
+[MovieApi-CA](https://github.com/laszloprekop/MovieApi-CA) hosted on a Coolify-managed VPS.
+What you click in the demo hits a real API and a real SQL Server.
 
-## Screenshots (local, against the real API)
+## Screenshots (the live site)
 
-| The catalogue — list, create form, real genres | Detail page — synopsis, actors, reviews |
+| The catalogue — search, filter, full CRUD | Detail page — cast with roles, reviews |
 |---|---|
 | ![Katalogen](docs/screenshots/01-katalogen.png) | ![Detaljer](docs/screenshots/02-detaljer.png) |
 
-| Edit in place — the form switches modes | What the live demo shows today |
+| Dashboard — server-side aggregates, Recharts | The URL is the filter state |
 |---|---|
-| ![Redigera](docs/screenshots/03-redigera.png) | ![Utan backend](docs/screenshots/04-utan-backend.png) |
+| ![Dashboard](docs/screenshots/03-dashboard.png) | ![Filter](docs/screenshots/04-filter.png) |
+
+## How the pieces fit
+
+Two repos, two deploys, one system:
+
+```mermaid
+flowchart LR
+    dev([git push]) --> pw["Actions: Pages build<br/>VITE_API_URL baked at build time"]
+    dev --> iw["Actions: image build<br/>tests gate the push"]
+    pw --> pages["GitHub Pages<br/>this client"]
+    iw --> ghcr[("GHCR<br/>movieapi-ca:latest")]
+    ghcr -- "Coolify pulls" --> api
+    subgraph vps ["Hetzner VPS — Coolify"]
+        traefik["Traefik<br/>HTTPS for movieapi.dentaku.se"] --> api["MovieApi container<br/>:8080"]
+        api --> sql[("SQL Server container<br/>internal network only")]
+    end
+    browser((Browser)) --> pages
+    browser -- "fetch" --> traefik
+```
+
+- **This client** deploys to GitHub Pages on every push. `VITE_API_URL` is baked in at
+  build time — the deployed bundle knows exactly one API. Deep links survive refresh via
+  the SPA-fallback trick (`404.html`).
+- **The API** is built into a Docker image by GitHub Actions (tests must pass first),
+  pushed to GHCR, and pulled by Coolify. Traefik terminates HTTPS at
+  `movieapi.dentaku.se`; on first boot the API migrates and seeds its own database.
+- **SQL Server** runs as a container on the same VPS, reachable only on the internal
+  Docker network — no public port.
 
 ## Status
 
@@ -37,22 +64,23 @@ A React client for [MovieApi-CA](https://github.com/laszloprekop/MovieApi-CA)
 - [x] Walking skeleton: routing (`BrowserRouter`, layout + `Outlet`, lazy pages, 404), deployed to Pages with SPA fallback
 - [x] Nivå 1 — full CRUD: list with loading/error states, create (with genre dropdown), edit in place, delete
 - [x] Nivå 2 — detail pages (`useParams`, `useNavigate`) with actors and reviews; write a review, server rules surfaced as messages
-- [x] API work driven by the client: CORS, `GET /api/genres`, a review-response bug found and fixed
+- [x] Nivå 3 — search & genre filter via `useSearchParams`; add actors **with a role** (a real join-entity migration on the API side)
+- [x] Nivå 4 — admin dashboard from a `ReportsController`, drawn with Recharts
+- [x] API hosted on Coolify — the live demo runs against the real backend
+- [x] Terminal look — [terminal.css](https://panr.github.io/terminal-css/) theme over Tailwind
+- [x] API work driven by the client: CORS, `GET /api/genres`, a title search filter, cast roles, a reports endpoint, a review-response bug found and fixed
 
 **Planned**
 
-- [ ] Host MovieApi-CA on Coolify — wakes the live demo up
-- [ ] Nivå 3 — search & genre filter via query strings (`useSearchParams`), add actors with a role
-- [ ] Nivå 4 — admin dashboard from a ReportsController, charts
 - [ ] ⋆✴︎˚｡⋆ **Gissa filmen** ⟡˙⋆ — the quiz
-- [ ] The Mega X-Treme visual pass
 
 ## Stack
 
 - React 19 + TypeScript, Vite
-- React Router 7 (`BrowserRouter` / `Routes` / `Route`)
-- Tailwind 4, Vitest
-- Backend: MovieApi-CA (.NET 10, Clean Architecture) — runs locally today, Coolify hosting planned
+- React Router 7 (`BrowserRouter` / `Routes` / `Route`, `useSearchParams`)
+- Tailwind 4 + [terminal.css](https://panr.github.io/terminal-css/), Recharts, Vitest
+- Backend: [MovieApi-CA](https://github.com/laszloprekop/MovieApi-CA) (.NET 10, Clean
+  Architecture) — hosted on a Coolify-managed VPS, SQL Server in a container beside it
 
 ## Run it
 
