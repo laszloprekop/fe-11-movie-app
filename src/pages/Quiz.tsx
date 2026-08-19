@@ -405,7 +405,7 @@ export default function Quiz() {
           <div className="case-settled-only" inert={!settled}>
             <div className="grid justify-items-center gap-3 px-6 py-5 text-center">
               {state.movie.synopsis && (
-                <p className="max-w-[44ch] text-xs opacity-80">{state.movie.synopsis}</p>
+                <p className="max-w-[44ch] text-base opacity-80">{state.movie.synopsis}</p>
               )}
               <p className="vhs-label">
                 {state.movie.actors.length > 0 ? state.movie.actors.join(" · ") : "Okänd ensemble"}
@@ -467,7 +467,7 @@ export default function Quiz() {
                 <p className="text-lg font-bold">Du gav upp — 0 poäng.</p>
               )}
               <div className="mt-6 font-mono">
-                <p className="text-sm opacity-60">FILMEN VAR:</p>
+                <p className="text-base opacity-60">FILMEN VAR:</p>
                 <p className="mt-1 text-lg font-bold">
                   {state.movie.title} ({state.movie.year})
                 </p>

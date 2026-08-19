@@ -178,9 +178,10 @@ p.alert {
 }
 .vhs-label {
   font-family: Helvetica, Arial, sans-serif;
-  font-size: 11px;
+  /* readability floor: box print stays uppercase but never under 16px */
+  font-size: 16px;
   font-weight: bold;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 .vhs-hand {
@@ -221,13 +222,13 @@ p.alert {
   gap: 12px;
   padding-block: 9px;
   border-bottom: 1.5px solid var(--vhs-ink);
-  font-size: 14px;
+  font-size: 16px;
 }
 .spec-row .spec-label {
-  flex: 0 0 130px;
-  font-size: 11px;
+  flex: 0 0 150px;
+  font-size: 16px;
   font-weight: bold;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 /* The newest clue is the hot one — teal marks it until the next purchase. */
@@ -247,13 +248,13 @@ p.alert {
   margin-left: auto;
   padding: 3px 10px;
   border-width: 2px;
-  font-size: 12px;
+  font-size: 16px;
   color: var(--vhs-ink);
 }
 .spec-row.locked .spec-price {
   margin-left: auto;
   font-family: var(--font-stack, monospace);
-  font-size: 12px;
+  font-size: 16px;
 }
 .small-print {
   font-size: 8.5px;
@@ -476,7 +477,7 @@ button.on-card {
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  font-size: 13px;
+  font-size: 16px;
 }
 .status span { opacity: 0.6; }
 .status .hot { color: var(--cta); }
@@ -697,7 +698,7 @@ button.on-card {
   background: var(--vhs-card);
   color: var(--vhs-ink);
   padding: 4px 10px;
-  font-size: 11.5px;
+  font-size: 16px;
 }
 .total-row {
   position: relative;
@@ -714,6 +715,6 @@ button.on-card {
   font-size: 15px;
 }
 .rekord {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--accent);
 }
