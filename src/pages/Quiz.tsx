@@ -205,13 +205,13 @@ export default function Quiz() {
     return (
       <div className="studio">
         <h1 className="sr-only">Gissa filmen</h1>
-        <div className="slipcase w-[380px] max-w-full">
+        <div className="slipcase aspect-[380/483] w-[380px] max-w-full">
           <div className="slipcase-band px-6 pt-7 pb-6">
             <p className="vhs-display text-5xl">GISSA FILMEN</p>
             <p className="vhs-label mt-2 opacity-85">Video Cassette</p>
           </div>
           <div className="stripes tall" />
-          <div className="grid justify-items-center gap-4 px-6 py-7 text-center">
+          <div className="grid grow content-center justify-items-center gap-4 px-6 py-7 text-center">
             <span className="sticker">NYHET!</span>
             <p className="vhs-label">Kvällens fem</p>
             <p className="max-w-[38ch] text-xs opacity-80">
@@ -318,12 +318,12 @@ export default function Quiz() {
     return (
       <div className="studio">
         <div className="quiz-grid">
-          <div className="slipcase w-[460px] max-w-full">
+          <div className="slipcase aspect-[460/523] w-[460px] max-w-full">
             <div className="slipcase-band px-6 pt-3 pb-3">
               <p className="vhs-label">Video Cassette</p>
             </div>
             <div className="stripes" />
-            <div className="px-7 pt-5 pb-4">
+            <div className="flex grow flex-col px-7 pt-5 pb-4">
               <p className="vhs-display text-2xl">OKÄND FILM — T-{state.movie.duration}</p>
               <div className="mt-3">
                 {clues.slice(0, state.revealed).map((clue) => (
@@ -345,7 +345,7 @@ export default function Quiz() {
                   </div>
                 ))}
               </div>
-              <p className="small-print mt-4">
+              <p className="small-print mt-auto pt-4">
                 Otillåten gissning utan poängavdrag är förbjuden enligt husets regler.
                 Ledtrådar säljs styckvis. Ingen ånger. Svit bryts vid uppgivande.
               </p>
@@ -407,7 +407,7 @@ export default function Quiz() {
               <span className="vhs-hand">{state.movie.title}</span>
             </div>
           </div>
-          <div className="slipcase w-[400px] max-w-full">
+          <div className="slipcase aspect-[400/486] w-[400px] max-w-full">
             <div className="slipcase-band px-6 pt-8 pb-7">
               <p className="vhs-display text-4xl">{state.movie.title.toUpperCase()}</p>
               <p className="vhs-label mt-2 opacity-85">
@@ -415,7 +415,7 @@ export default function Quiz() {
               </p>
             </div>
             <div className="stripes tall" />
-            <div className="grid justify-items-center gap-3 px-6 py-5 text-center">
+            <div className="grid grow content-center justify-items-center gap-3 px-6 py-5 text-center">
               {state.movie.synopsis && (
                 <p className="max-w-[44ch] text-xs opacity-80">{state.movie.synopsis}</p>
               )}

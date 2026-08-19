@@ -121,8 +121,12 @@ p.alert {
   font-family: "Permanent Marker", cursive;
 }
 
-/* The slipcase: cream card, ink print, hard offset shadow — a thing, not a panel. */
+/* The slipcase: cream card, ink print, hard offset shadow — a thing, not a panel.
+   A physical box keeps its shape: each screen pins the board's aspect-ratio
+   (soft — content can still stretch it), and the column lets the body fill. */
 .slipcase {
+  display: flex;
+  flex-direction: column;
   background: var(--vhs-card);
   color: var(--vhs-ink);
   font-family: Helvetica, Arial, sans-serif;
