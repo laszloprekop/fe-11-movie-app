@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { buildClues, isCorrectGuess, maskSynopsis, normalize, roundScore } from "./quiz"
+import { buildClues, drawRound, isCorrectGuess, maskSynopsis, normalize, roundScore, sessionLength } from "./quiz"
 
 describe("normalize", () => {
   it("lowercases, trims and collapses whitespace", () => {
@@ -136,5 +136,34 @@ describe("buildClues", () => {
     expect(clues[0].value).toBe("126 min · okänt språk")
     expect(clues[3].value).toBe("okänd ensemble")
     expect(clues[4].value).toBe("synopsis saknas")
+  })
+})
+
+describe("the session pool", () => {
+  it("caps a big catalogue at SESSION_ROUNDS", () => {
+    expect(sessionLength(20)).toBe(5)
+  })
+
+  it("shrinks the session to a small catalogue", () => {
+    expect(sessionLength(3)).toBe(3)
+  })
+
+  it("draws the movie the dice point at and removes it from the pool", () => {
+    const { movieId, rest } = drawRound([10, 20, 30], () => 0.5)
+    expect(movieId).toBe(20)
+    expect(rest).toEqual([10, 30])
+  })
+
+  // Invariant 4: a movie appears at most once per session — the pool only
+  // ever shrinks, so a full session with real dice never repeats.
+  it("invariant: a full session never repeats a movie", () => {
+    let pool = [1, 2, 3, 4, 5, 6]
+    const seen: number[] = []
+    for (let round = 0; round < sessionLength(pool.length); round++) {
+      const draw = drawRound(pool, Math.random)
+      seen.push(draw.movieId)
+      pool = draw.rest
+    }
+    expect(new Set(seen).size).toBe(seen.length)
   })
 })

@@ -1,6 +1,7 @@
 // Pure quiz rules — no React, no fetch. mechanics.md, spelled as code.
 import {
   CLUE_COST,
+  SESSION_ROUNDS,
   START_SCORE,
   STREAK_BONUS,
   WIN_FLOOR,
@@ -36,6 +37,22 @@ export function maskSynopsis(synopsis: string, title: string): string {
 export function isCorrectGuess(guess: string, title: string): boolean {
   const normalized = normalize(guess)
   return normalized !== "" && normalized === normalize(title)
+}
+
+// A session is as long as the catalogue allows, capped by the rules.
+export function sessionLength(poolSize: number): number {
+  return Math.min(SESSION_ROUNDS, poolSize)
+}
+
+// Draw one movie and hand back the shrunken pool — no repeats by
+// construction (invariant 4). Chance is a *parameter*: the app passes
+// Math.random, a test passes a stub and nails the dice.
+export function drawRound(
+  pool: number[],
+  random: () => number,
+): { movieId: number; rest: number[] } {
+  const index = Math.floor(random() * pool.length)
+  return { movieId: pool[index], rest: pool.toSpliced(index, 1) }
 }
 
 // The domain's own movie shape — the quiz rules survive an API reshape
