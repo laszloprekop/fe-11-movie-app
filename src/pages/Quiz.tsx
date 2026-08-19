@@ -9,6 +9,7 @@ import {
   longestWinStreak,
   roundScore,
   sessionLength,
+  suggestTitles,
   type QuizMovie,
 } from "../domain/quiz"
 import { readBest, writeBest } from "../domain/storage"
@@ -36,6 +37,7 @@ type QuizState =
       phase: "playing"
       movie: QuizMovie
       pool: number[]
+      titles: string[] // the whole catalogue — the shrinking pool would leak
       revealed: number
       wrongGuesses: number
       outcome: "open" | "won" | "gaveUp"
@@ -50,7 +52,13 @@ type QuizAction =
   | { type: "loadStarted" }
   | { type: "loadFailed"; error: unknown }
   | { type: "poolEmpty" }
-  | { type: "sessionStarted"; movie: QuizMovie; pool: number[]; catalogueSize: number }
+  | {
+      type: "sessionStarted"
+      movie: QuizMovie
+      pool: number[]
+      titles: string[]
+      catalogueSize: number
+    }
   | { type: "nextRoundStarted"; movie: QuizMovie; pool: number[] }
   | { type: "sessionEnded" }
   | { type: "clueBought" }
@@ -90,6 +98,7 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
         phase: "playing",
         movie: action.movie,
         pool: action.pool,
+        titles: action.titles,
         revealed: 1,
         wrongGuesses: 0,
         outcome: "open",
@@ -181,6 +190,7 @@ export default function Quiz() {
         type: "sessionStarted",
         movie: toQuizMovie(details),
         pool: rest,
+        titles: movies.map((movie) => movie.title),
         catalogueSize: movies.length,
       })
     } catch (error) {
@@ -329,6 +339,7 @@ export default function Quiz() {
   // tape's rotate-slide, the sleeve's width and tilt, the containers' heights.
   const settled = state.outcome !== "open"
   const won = state.outcome === "won"
+  const suggestions = settled ? [] : suggestTitles(state.titles, draft)
 
   return (
     <div className="studio">
@@ -463,6 +474,17 @@ export default function Quiz() {
               </div>
             )}
           </div>
+          {suggestions.length > 0 && (
+            <ul className="label-suggest">
+              {suggestions.map((title) => (
+                <li key={title}>
+                  <button type="button" onClick={() => setDraft(title)}>
+                    {title}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div className="side-panel">

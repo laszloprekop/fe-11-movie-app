@@ -678,6 +678,36 @@ button.on-card {
   display: none;
 }
 
+/* Autocomplete: catalogue titles offered as label offcuts hanging under the
+   write-on label — click fills the draft; the guess still must be submitted. */
+.label-suggest {
+  position: absolute;
+  z-index: 2;
+  left: 118px;
+  top: 192px;
+  width: 190px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 3px;
+}
+.label-suggest button {
+  width: 100%;
+  padding: 3px 8px;
+  border: none;
+  background: var(--vhs-card);
+  color: var(--vhs-ink);
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+}
+.label-suggest button:hover,
+.label-suggest button:focus-visible {
+  background: var(--cta);
+}
+
 /* A wrong guess gets stamped over the label in the stripe red — it hits,
    holds a beat, and fades. The status row keeps the running count. */
 .stamp {
