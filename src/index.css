@@ -72,6 +72,15 @@ h1::after {
   }
 }
 
+/* The round screen's title trades the cursor for a pointer at the cassette
+   below — static, so it needs no reduced-motion guard (and its class outranks
+   the guard's h1::after anyway). */
+h1.points-down::after {
+  content: "▼";
+  animation: none;
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   h1::after {
     animation: none;

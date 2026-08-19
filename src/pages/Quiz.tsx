@@ -509,7 +509,7 @@ export default function Quiz() {
             </>
           ) : (
             <>
-              <h1 className="text-2xl font-bold">Gissa filmen</h1>
+              <h1 className="points-down text-2xl font-bold">Gissa filmen</h1>
               <div className="tape-space" />
               <div className="flex gap-3">
                 <button type="submit" form="guess-form">
