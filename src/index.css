@@ -177,6 +177,14 @@ p.alert {
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
+/* The newest clue is the hot one — teal marks it until the next purchase. */
+.spec-row.fresh {
+  background: color-mix(in srgb, var(--cta) 16%, transparent);
+  border-bottom-color: var(--cta);
+  box-shadow: inset 3px 0 0 var(--cta);
+  padding-inline: 8px;
+}
+
 .spec-row.locked {
   border-bottom-style: dashed;
   color: color-mix(in srgb, var(--vhs-ink) 45%, transparent);

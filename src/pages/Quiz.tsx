@@ -369,8 +369,11 @@ export default function Quiz() {
                 </div>
               </div>
               <div className="mt-4">
-                {clues.slice(0, state.revealed).map((clue) => (
-                  <div key={clue.label} className="spec-row">
+                {clues.slice(0, state.revealed).map((clue, index) => (
+                  <div
+                    key={clue.label}
+                    className={index === state.revealed - 1 ? "spec-row fresh" : "spec-row"}
+                  >
                     <span className="spec-label">{clue.label}</span>
                     <span>{clue.value}</span>
                   </div>
