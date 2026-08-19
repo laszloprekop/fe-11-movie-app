@@ -133,6 +133,11 @@ button.small {
   font-size: 0.85em;
 }
 
+/* Catalogue rows sit on hairlines — one dashed rule per row. */
+.row-line {
+  border-bottom: 1px dashed color-mix(in srgb, var(--foreground) 25%, transparent);
+}
+
 /* Errors speak in the terminal's own alert voice. */
 p.alert {
   border-left: 4px solid var(--danger);

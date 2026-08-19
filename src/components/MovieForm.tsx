@@ -54,7 +54,7 @@ export default function MovieForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-6 grid max-w-md gap-3">
+    <form onSubmit={handleSubmit} className="grid gap-3">
       <h2 className="text-xl font-bold">
         {editing ? `Redigera: ${initial.title}` : "Lägg till film"}
       </h2>

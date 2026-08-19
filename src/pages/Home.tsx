@@ -106,74 +106,92 @@ export default function Home() {
       {state.status === "loading" && <p className="mt-4">Laddar filmerna…</p>}
       {state.status === "error" && <ErrorBanner error={state.error} />}
       {state.status === "ready" && (
-        <>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault()
-              const draft = new FormData(event.currentTarget).get(
-                "title",
-              ) as string
-              updateFilter("title", draft.trim())
-            }}
-            className="mt-4 flex flex-wrap gap-2"
-          >
-            <input
-              key={title ?? ""}
-              name="title"
-              defaultValue={title ?? ""}
-              placeholder="Sök på titel…"
-            />
-            <button>Sök</button>
-            <select
-              value={genre ?? ""}
-              onChange={(event) => updateFilter("genre", event.target.value)}
-              aria-label="Filtrera på genre"
+        <div className="mt-4 grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <section>
+            <form
+              onSubmit={(event) => {
+                event.preventDefault()
+                const draft = new FormData(event.currentTarget).get(
+                  "title",
+                ) as string
+                updateFilter("title", draft.trim())
+              }}
+              className="flex flex-wrap gap-2"
             >
-              <option value="">Alla genrer</option>
-              {state.genres.map((g) => (
-                <option key={g.id} value={g.name}>
-                  {g.name}
-                </option>
+              <input
+                key={title ?? ""}
+                name="title"
+                defaultValue={title ?? ""}
+                placeholder="Sök på titel…"
+                className="min-w-40 grow"
+              />
+              <button>Sök</button>
+              <select
+                value={genre ?? ""}
+                onChange={(event) => updateFilter("genre", event.target.value)}
+                aria-label="Filtrera på genre"
+              >
+                <option value="">Alla genrer</option>
+                {state.genres.map((g) => (
+                  <option key={g.id} value={g.name}>
+                    {g.name}
+                  </option>
+                ))}
+              </select>
+            </form>
+            <p className="mt-3 text-sm opacity-60">
+              {state.movies.length}{" "}
+              {state.movies.length === 1 ? "film" : "filmer"} i katalogen
+            </p>
+            <ul className="mt-1">
+              {state.movies.map((movie) => (
+                <li
+                  key={movie.id}
+                  className="row-line grid grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-3 py-2"
+                >
+                  <span>
+                    <Link to={`/movies/${movie.id}`} className="underline">
+                      {movie.title}
+                    </Link>{" "}
+                    ({movie.year})
+                  </span>
+                  <button
+                    onClick={() =>
+                      setState({ ...state, editing: movie, saveError: undefined })
+                    }
+                    className="small"
+                  >
+                    Redigera
+                  </button>
+                  <button
+                    onClick={() => handleDelete(movie.id)}
+                    aria-label={`Ta bort ${movie.title}`}
+                    className="small danger"
+                  >
+                    Ta bort
+                  </button>
+                </li>
               ))}
-            </select>
-          </form>
-          <ul className="mt-4 space-y-2">
-            {state.movies.map((movie) => (
-              <li key={movie.id} className="flex items-center gap-3">
-                <Link to={`/movies/${movie.id}`} className="underline">
-                  {movie.title}
-                </Link>{" "}
-                ({movie.year})
-                <button
-                  onClick={() =>
-                    setState({ ...state, editing: movie, saveError: undefined })
-                  }
-                  className="small"
-                >
-                  Redigera
-                </button>
-                <button
-                  onClick={() => handleDelete(movie.id)}
-                  aria-label={`Ta bort ${movie.title}`}
-                  className="small danger"
-                >
-                  Ta bort
-                </button>
-              </li>
-            ))}
-            {state.movies.length === 0 && <li>Inga filmer matchar filtret.</li>}
-          </ul>
-          {state.saveError !== undefined && (
-            <ErrorBanner error={state.saveError} />
-          )}
-          <MovieForm
-            key={state.editing?.id ?? "new"}
-            genres={state.genres}
-            initial={state.editing ?? null}
-            onSubmit={state.editing ? handleUpdate : handleCreate}
-            onCancel={() => setState({ ...state, editing: undefined })}
-          />
-        </>
+              {state.movies.length === 0 && (
+                <li className="py-2">Inga filmer matchar filtret.</li>
+              )}
+            </ul>
+          </section>
+          <aside className="border p-4">
+            {state.saveError !== undefined && (
+              <div className="mb-3">
+                <ErrorBanner error={state.saveError} />
+              </div>
+            )}
+            <MovieForm
+              key={state.editing?.id ?? "new"}
+              genres={state.genres}
+              initial={state.editing ?? null}
+              onSubmit={state.editing ? handleUpdate : handleCreate}
+              onCancel={() => setState({ ...state, editing: undefined })}
+            />
+          </aside>
+        </div>
       )}
     </>
   )
