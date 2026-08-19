@@ -225,10 +225,11 @@ p.alert {
   font-size: 16px;
 }
 .spec-row .spec-label {
-  flex: 0 0 150px;
-  font-size: 16px;
+  /* labels are wayfinding, not content — they may stay small */
+  flex: 0 0 130px;
+  font-size: 11px;
   font-weight: bold;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 /* The newest clue is the hot one — teal marks it until the next purchase. */
@@ -479,7 +480,11 @@ button.on-card {
   gap: 8px;
   font-size: 16px;
 }
-.status span { opacity: 0.6; }
+.status span {
+  opacity: 0.6;
+  /* labels are wayfinding, not content — they may stay small */
+  font-size: 13px;
+}
 .status .hot { color: var(--cta); }
 
 /* One tape for both boards: it lies half under the sleeve while the round is
