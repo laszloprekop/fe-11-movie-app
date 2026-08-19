@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- the slipcase stripe band as the app's mark -->
+  <rect y="0" width="64" height="12.8" fill="#F2B70A"/>
+  <rect y="12.8" width="64" height="12.8" fill="#F0810F"/>
+  <rect y="25.6" width="64" height="12.8" fill="#E23D28"/>
+  <rect y="38.4" width="64" height="12.8" fill="#B01E5E"/>
+  <rect y="51.2" width="64" height="12.8" fill="#4E2A7E"/>
+</svg>

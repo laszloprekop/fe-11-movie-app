@@ -125,9 +125,10 @@ nav a.active {
 nav a.quiz-link::before {
   content: "";
   display: inline-block;
-  width: 12px;
-  height: 12px;
+  width: 24px;
+  height: 24px;
   margin-right: 8px;
+  vertical-align: middle;
   background: linear-gradient(
     to bottom,
     var(--stripe-1) 0 20%, var(--stripe-2) 20% 40%, var(--stripe-3) 40% 60%,
