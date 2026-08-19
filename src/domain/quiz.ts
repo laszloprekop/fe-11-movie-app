@@ -1,4 +1,11 @@
 // Pure quiz rules — no React, no fetch. mechanics.md, spelled as code.
+import {
+  CLUE_COST,
+  START_SCORE,
+  STREAK_BONUS,
+  WIN_FLOOR,
+  WRONG_GUESS_COST,
+} from "./rules"
 
 // One normalization for both sides of every comparison: lowercase, drop
 // punctuation, collapse whitespace. \p{L} means "any letter in any script",
@@ -29,4 +36,24 @@ export function maskSynopsis(synopsis: string, title: string): string {
 export function isCorrectGuess(guess: string, title: string): boolean {
   const normalized = normalize(guess)
   return normalized !== "" && normalized === normalize(title)
+}
+
+// What a finished round knows about itself — facts, not conclusions.
+export type RoundFacts = {
+  won: boolean
+  cluesRevealed: number // counts the free opener, hence the -1 below
+  wrongGuesses: number
+}
+
+// The score is computed from the facts every time it is needed — measured,
+// not stored. The floor applies to the base; the bonus lands on top of the
+// floored value. streak counts the wins *before* this one: the bonus rewards
+// being on a streak, not starting one.
+export function roundScore(facts: RoundFacts, streak: number): number {
+  if (!facts.won) return 0
+  const base =
+    START_SCORE -
+    (facts.cluesRevealed - 1) * CLUE_COST -
+    facts.wrongGuesses * WRONG_GUESS_COST
+  return Math.max(WIN_FLOOR, base) + STREAK_BONUS * streak
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { isCorrectGuess, maskSynopsis, normalize } from "./quiz"
+import { isCorrectGuess, maskSynopsis, normalize, roundScore } from "./quiz"
 
 describe("normalize", () => {
   it("lowercases, trims and collapses whitespace", () => {
@@ -68,5 +68,31 @@ describe("isCorrectGuess", () => {
 
   it("never accepts an empty guess", () => {
     expect(isCorrectGuess("   ", "Her")).toBe(false)
+  })
+})
+
+describe("roundScore", () => {
+  // Invariant 3: the perfect round is worth exactly the opening score.
+  it("pays exactly START_SCORE for a flawless free-clue win", () => {
+    expect(roundScore({ won: true, cluesRevealed: 1, wrongGuesses: 0 }, 0)).toBe(1000)
+  })
+
+  it("subtracts per paid clue and per wrong guess", () => {
+    // two paid clues and one wrong guess: 1000 − 2·150 − 100
+    expect(roundScore({ won: true, cluesRevealed: 3, wrongGuesses: 1 }, 0)).toBe(600)
+  })
+
+  // Invariants 1 and 2: a win never pays under the floor, never negative.
+  it("never pays a win less than WIN_FLOOR", () => {
+    expect(roundScore({ won: true, cluesRevealed: 5, wrongGuesses: 9 }, 0)).toBe(100)
+  })
+
+  it("adds the streak bonus on top of the floored base", () => {
+    expect(roundScore({ won: true, cluesRevealed: 5, wrongGuesses: 9 }, 3)).toBe(250)
+  })
+
+  // Invariant 7, the paying half — the streak reset lives with session state.
+  it("pays zero for giving up, whatever the streak", () => {
+    expect(roundScore({ won: false, cluesRevealed: 5, wrongGuesses: 2 }, 4)).toBe(0)
   })
 })
