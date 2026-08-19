@@ -208,7 +208,7 @@ export default function Quiz() {
         <div className="slipcase aspect-[380/483] w-[380px] max-w-full">
           <div className="slipcase-band px-6 pt-7 pb-6">
             <p className="vhs-display text-5xl">GISSA FILMEN</p>
-            <p className="vhs-label mt-2 opacity-85">Video Cassette</p>
+            <p className="vhs-label mt-2 opacity-85">Home Entertainment</p>
           </div>
           <div className="stripes tall" />
           <div className="grid grow content-center justify-items-center gap-4 px-6 py-7 text-center">
@@ -320,7 +320,7 @@ export default function Quiz() {
         <div className="quiz-grid">
           <div className="slipcase aspect-[460/523] w-[460px] max-w-full">
             <div className="slipcase-band px-6 pt-3 pb-3">
-              <p className="vhs-label">Video Cassette</p>
+              <p className="vhs-label">Home Entertainment</p>
             </div>
             <div className="stripes" />
             <div className="flex grow flex-col px-7 pt-5 pb-4">
@@ -415,7 +415,7 @@ export default function Quiz() {
           </div>
           <div className="slipcase aspect-[400/486] w-[400px] max-w-full">
             <div className="slipcase-band px-6 pt-8 pb-7">
-              <p className="vhs-display text-4xl">{state.movie.title.toUpperCase()}</p>
+              <p className="vhs-display text-[42px]">{state.movie.title.toUpperCase()}</p>
               <p className="vhs-label mt-2 opacity-85">
                 {state.movie.year} · {state.movie.genre} · {state.movie.duration} min
               </p>
@@ -454,7 +454,7 @@ export default function Quiz() {
               </strong>
             </div>
             <div>
-              <span>DENNA OMGÅNG</span>
+              <span>BANKAT</span>
               <strong className="hot">{won ? prize : 0} POÄNG</strong>
             </div>
             <div>

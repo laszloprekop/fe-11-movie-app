@@ -260,7 +260,7 @@ p.alert {
 .reveal-stage .slipcase {
   position: relative;
   z-index: 1;
-  transform: rotate(2deg);
+  transform: rotate(-2deg);
 }
 /* The wrapper owns place + slide; the cassette inside stays a flat 420×210
    drawing, stood upright with one rotation — the board's exact geometry. */
