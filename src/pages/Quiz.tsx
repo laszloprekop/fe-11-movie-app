@@ -1,8 +1,14 @@
-import { useReducer } from "react"
+import { useReducer, useState, type SubmitEvent } from "react"
 import { getMovieDetails, getMovies } from "../api/movies"
 import type { MovieDetailDto } from "../api/types"
 import ErrorBanner from "../components/ErrorBanner"
-import { buildClues, drawRound, roundScore, type QuizMovie } from "../domain/quiz"
+import {
+  buildClues,
+  drawRound,
+  isCorrectGuess,
+  roundScore,
+  type QuizMovie,
+} from "../domain/quiz"
 
 // The page is where API words become domain words — only this mapper knows
 // the DTO, so the quiz rules survive an API reshape untouched.
@@ -29,6 +35,7 @@ type QuizState =
       pool: number[]
       revealed: number
       wrongGuesses: number
+      outcome: "open" | "won" | "gaveUp"
     }
 
 type QuizAction =
@@ -37,6 +44,8 @@ type QuizAction =
   | { type: "poolEmpty" }
   | { type: "roundStarted"; movie: QuizMovie; pool: number[] }
   | { type: "clueBought" }
+  | { type: "guessed"; guess: string }
+  | { type: "gaveUp" }
 
 // The reducer stores facts; every rule it needs lives in domain/quiz.ts.
 function quizReducer(state: QuizState, action: QuizAction): QuizState {
@@ -54,18 +63,35 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
         pool: action.pool,
         revealed: 1,
         wrongGuesses: 0,
+        outcome: "open",
       }
     case "clueBought":
-      if (state.phase !== "playing") return state
+      if (state.phase !== "playing" || state.outcome !== "open") return state
       return {
         ...state,
         revealed: Math.min(state.revealed + 1, buildClues(state.movie).length),
       }
+    case "guessed": {
+      if (state.phase !== "playing" || state.outcome !== "open") return state
+      if (isCorrectGuess(action.guess, state.movie.title))
+        return { ...state, outcome: "won" }
+      return { ...state, wrongGuesses: state.wrongGuesses + 1 }
+    }
+    case "gaveUp":
+      if (state.phase !== "playing" || state.outcome !== "open") return state
+      return { ...state, outcome: "gaveUp" }
   }
 }
 
 export default function Quiz() {
   const [state, dispatch] = useReducer(quizReducer, { phase: "idle" })
+  const [draft, setDraft] = useState("")
+
+  function handleGuess(e: SubmitEvent) {
+    e.preventDefault()
+    dispatch({ type: "guessed", guess: draft })
+    setDraft("")
+  }
 
   // Every fetch here answers a click, so no useEffect: effects are for
   // fetch-on-render, handlers are for fetch-on-event.
@@ -136,6 +162,7 @@ export default function Quiz() {
       <h1 className="text-2xl font-bold">Gissa filmen</h1>
       <p className="mt-2">
         Vinst just nu: <strong>{prize} poäng</strong>
+        {state.wrongGuesses > 0 && <> · Fel gissningar: {state.wrongGuesses}</>}
       </p>
       <ol className="mt-4 grid max-w-xl gap-3">
         {clues.slice(0, state.revealed).map((clue) => (
@@ -145,10 +172,46 @@ export default function Quiz() {
           </li>
         ))}
       </ol>
-      {state.revealed < clues.length && (
-        <button className="mt-4" onClick={() => dispatch({ type: "clueBought" })}>
-          Köp nästa ledtråd (−{clues[state.revealed].cost} poäng)
-        </button>
+      {state.outcome === "open" ? (
+        <>
+          {state.revealed < clues.length && (
+            <button className="mt-4" onClick={() => dispatch({ type: "clueBought" })}>
+              Köp nästa ledtråd (−{clues[state.revealed].cost} poäng)
+            </button>
+          )}
+          <form onSubmit={handleGuess} className="mt-4 flex max-w-xl gap-2">
+            <input
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              placeholder="Vilken film är det?"
+              aria-label="Din gissning"
+              required
+              className="grow"
+            />
+            <button type="submit">Gissa</button>
+            <button
+              type="button"
+              className="muted"
+              onClick={() => dispatch({ type: "gaveUp" })}
+            >
+              Ge upp
+            </button>
+          </form>
+        </>
+      ) : (
+        <section className="mt-4 max-w-xl border p-3">
+          <p className="font-bold">
+            {state.outcome === "won"
+              ? `Rätt! ${prize} poäng.`
+              : "Du gav upp — 0 poäng."}
+          </p>
+          <p className="mt-1">
+            Filmen var <strong>{state.movie.title}</strong> ({state.movie.year}).
+          </p>
+          <button className="mt-3" onClick={startSession}>
+            Ny omgång
+          </button>
+        </section>
       )}
     </>
   )
