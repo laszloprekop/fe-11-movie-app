@@ -387,15 +387,16 @@ button.on-card {
   height: 6px;
   margin: -3px;
   border-radius: 50%;
-  animation: burst-dots 0.9s ease-out forwards;
+  animation: burst-dots 1.4s ease-out infinite;
 }
 .burst::after {
   content: "✦";
   margin: -12px 0 0 -10px;
   font-size: 20px;
   color: #c9950c;
-  animation: burst-stars 0.9s ease-out forwards;
+  animation: burst-stars 1.4s ease-out infinite;
 }
+/* each cycle bursts by 65%, then rests dark until the next round */
 @keyframes burst-dots {
   0% {
     opacity: 1;
@@ -403,6 +404,7 @@ button.on-card {
       0 0 0 #c9950c, 0 0 0 #a87a08, 0 0 0 #c9950c, 0 0 0 #a87a08,
       0 0 0 #c9950c, 0 0 0 #a87a08, 0 0 0 #c9950c, 0 0 0 #a87a08;
   }
+  65%,
   100% {
     opacity: 0;
     box-shadow:
@@ -417,6 +419,7 @@ button.on-card {
     transform: scale(0.4);
     text-shadow: 0 0 #a87a08, 0 0 #c9950c;
   }
+  65%,
   100% {
     opacity: 0;
     transform: scale(1.1) rotate(20deg);
