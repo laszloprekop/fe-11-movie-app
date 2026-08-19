@@ -7,6 +7,7 @@ import {
   drawRound,
   isCorrectGuess,
   roundScore,
+  sessionLength,
   type QuizMovie,
 } from "../domain/quiz"
 
@@ -36,16 +37,38 @@ type QuizState =
       revealed: number
       wrongGuesses: number
       outcome: "open" | "won" | "gaveUp"
+      scores: number[]
+      streak: number
+      totalRounds: number
     }
+  | { phase: "done"; scores: number[]; streak: number }
 
 type QuizAction =
   | { type: "loadStarted" }
   | { type: "loadFailed"; error: unknown }
   | { type: "poolEmpty" }
-  | { type: "roundStarted"; movie: QuizMovie; pool: number[] }
+  | { type: "sessionStarted"; movie: QuizMovie; pool: number[]; catalogueSize: number }
+  | { type: "nextRoundStarted"; movie: QuizMovie; pool: number[] }
+  | { type: "sessionEnded" }
   | { type: "clueBought" }
   | { type: "guessed"; guess: string }
   | { type: "gaveUp" }
+
+type Playing = Extract<QuizState, { phase: "playing" }>
+
+// Book the finished round: its score joins the list, the streak grows on a
+// win and resets on a give-up (invariant 7's second half).
+function bank(state: Playing) {
+  const facts = {
+    won: state.outcome === "won",
+    cluesRevealed: state.revealed,
+    wrongGuesses: state.wrongGuesses,
+  }
+  return {
+    scores: [...state.scores, roundScore(facts, state.streak)],
+    streak: state.outcome === "won" ? state.streak + 1 : 0,
+  }
+}
 
 // The reducer stores facts; every rule it needs lives in domain/quiz.ts.
 function quizReducer(state: QuizState, action: QuizAction): QuizState {
@@ -56,7 +79,7 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
       return { phase: "error", error: action.error }
     case "poolEmpty":
       return { phase: "empty" }
-    case "roundStarted":
+    case "sessionStarted":
       return {
         phase: "playing",
         movie: action.movie,
@@ -64,7 +87,26 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
         revealed: 1,
         wrongGuesses: 0,
         outcome: "open",
+        scores: [],
+        streak: 0,
+        totalRounds: sessionLength(action.catalogueSize),
       }
+    case "nextRoundStarted": {
+      if (state.phase !== "playing" || state.outcome === "open") return state
+      return {
+        ...state,
+        ...bank(state),
+        movie: action.movie,
+        pool: action.pool,
+        revealed: 1,
+        wrongGuesses: 0,
+        outcome: "open",
+      }
+    }
+    case "sessionEnded": {
+      if (state.phase !== "playing" || state.outcome === "open") return state
+      return { phase: "done", ...bank(state) }
+    }
     case "clueBought":
       if (state.phase !== "playing" || state.outcome !== "open") return state
       return {
@@ -108,7 +150,25 @@ export default function Quiz() {
         Math.random,
       )
       const details = await getMovieDetails(movieId)
-      dispatch({ type: "roundStarted", movie: toQuizMovie(details), pool: rest })
+      dispatch({
+        type: "sessionStarted",
+        movie: toQuizMovie(details),
+        pool: rest,
+        catalogueSize: movies.length,
+      })
+    } catch (error) {
+      dispatch({ type: "loadFailed", error })
+    }
+  }
+
+  // Round n+1 draws from the shrunken pool in state — invariant 4 by
+  // construction, no bookkeeping to forget.
+  async function nextRound() {
+    if (state.phase !== "playing") return
+    try {
+      const { movieId, rest } = drawRound(state.pool, Math.random)
+      const details = await getMovieDetails(movieId)
+      dispatch({ type: "nextRoundStarted", movie: toQuizMovie(details), pool: rest })
     } catch (error) {
       dispatch({ type: "loadFailed", error })
     }
@@ -149,19 +209,47 @@ export default function Quiz() {
     )
   }
 
+  if (state.phase === "done") {
+    const total = state.scores.reduce((sum, score) => sum + score, 0)
+    return (
+      <>
+        <h1 className="text-2xl font-bold">Gissa filmen</h1>
+        <section className="mt-4 max-w-xl border p-3">
+          <p className="font-bold">Kvällens fem är spelade!</p>
+          <p className="mt-1">
+            Totalt: <strong>{total} poäng</strong>
+          </p>
+          <ol className="mt-2">
+            {state.scores.map((score, index) => (
+              <li key={index}>
+                Omgång {index + 1}: {score} poäng
+              </li>
+            ))}
+          </ol>
+          <button className="mt-3" onClick={startSession}>
+            Spela igen
+          </button>
+        </section>
+      </>
+    )
+  }
+
   const clues = buildClues(state.movie)
   // The live prize is derived, never stored: "what a correct guess pays right
-  // now" is a question for roundScore, asked on every render.
+  // now" is a question for roundScore, asked on every render — and it counts
+  // the streak: what a win pays right now includes the bonus you stand on.
   const prize = roundScore(
     { won: true, cluesRevealed: state.revealed, wrongGuesses: state.wrongGuesses },
-    0,
+    state.streak,
   )
 
   return (
     <>
       <h1 className="text-2xl font-bold">Gissa filmen</h1>
       <p className="mt-2">
-        Vinst just nu: <strong>{prize} poäng</strong>
+        Omgång {state.scores.length + 1} av {state.totalRounds} · Vinst just nu:{" "}
+        <strong>{prize} poäng</strong>
+        {state.streak > 0 && <> · Svit: {state.streak}</>}
         {state.wrongGuesses > 0 && <> · Fel gissningar: {state.wrongGuesses}</>}
       </p>
       <ol className="mt-4 grid max-w-xl gap-3">
@@ -208,9 +296,15 @@ export default function Quiz() {
           <p className="mt-1">
             Filmen var <strong>{state.movie.title}</strong> ({state.movie.year}).
           </p>
-          <button className="mt-3" onClick={startSession}>
-            Ny omgång
-          </button>
+          {state.scores.length + 1 < state.totalRounds ? (
+            <button className="mt-3" onClick={nextRound}>
+              Nästa omgång
+            </button>
+          ) : (
+            <button className="mt-3" onClick={() => dispatch({ type: "sessionEnded" })}>
+              Visa slutresultat
+            </button>
+          )}
         </section>
       )}
     </>
