@@ -7,7 +7,7 @@ A React client for [MovieApi-CA](https://github.com/laszloprekop/MovieApi-CA)
 - search and genre filter, with the URL as the filter state
 - detail pages with reviews and actors — each actor with their role
 - admin dashboard with charts
-- and ⋆✴︎˚｡⋆ **Gissa filmen** ⟡˙⋆, a quiz built from the catalogue's own data (in progress)
+- and ⋆✴︎˚｡⋆ **Gissa filmen** ⟡˙⋆, a quiz built from the catalogue's own data
 
 ╭────────────────────.★..─╮
 
@@ -57,6 +57,20 @@ flowchart LR
 - **SQL Server** runs as a container on the same VPS, reachable only on the internal
   Docker network — no public port.
 
+## Gissa filmen
+
+A quiz built from the catalogue's own data — read-only against the API, so the audience
+can play the hosted client live. One round: the free clue opens (speltid + språk); every
+further clue costs 150 points, every wrong guess 100, and a correct guess never pays
+under 100. Five rounds make *kvällens fem*; a movie never repeats within a session. Best
+total and best streak persist in `localStorage`.
+
+![Gissa filmen](docs/screenshots/05-gissa-filmen.png)
+
+The rules are pure functions in `src/domain/` — no React imports, unit-tested with
+Vitest. The synopsis clue is title-masked (███), so the final clue can never contain
+the answer.
+
 ## Status
 
 **Done**
@@ -69,10 +83,11 @@ flowchart LR
 - [x] API hosted on Coolify — the live demo runs against the real backend
 - [x] Terminal look — [terminal.css](https://panr.github.io/terminal-css/) theme over Tailwind
 - [x] API work driven by the client: CORS, `GET /api/genres`, a title search filter, cast roles, a reports endpoint, a review-response bug found and fixed
+- [x] ⋆✴︎˚｡⋆ **Gissa filmen** ⟡˙⋆ — clue ladder, streaks, records; the rules are tested pure functions
 
 **Planned**
 
-- [ ] ⋆✴︎˚｡⋆ **Gissa filmen** ⟡˙⋆ — the quiz
+- [ ] fuzzy guess matching — deliberately out of v1, until live play proves the need
 
 ## Stack
 
