@@ -548,8 +548,10 @@ button.on-card {
   border: none;
   outline: none;
   background: transparent;
+  resize: none;
   font-family: "Permanent Marker", cursive;
   font-size: 18px;
+  line-height: 1.2;
   text-align: center;
   color: var(--vhs-ink);
   caret-color: var(--vhs-ink);
@@ -558,8 +560,8 @@ button.on-card {
   content: "▊";
   position: absolute;
   left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  top: 6px;
+  transform: translateX(-50%);
   font-size: 18px;
   color: var(--vhs-ink);
   pointer-events: none;

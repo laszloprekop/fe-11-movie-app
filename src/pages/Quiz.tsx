@@ -425,12 +425,21 @@ export default function Quiz() {
                 // The guess is written on the tape by hand; the terminal's
                 // block cursor marks the field until the writing starts.
                 <form id="guess-form" onSubmit={handleGuess} className="label-write">
-                  <input
+                  {/* a textarea, so a long title wraps like real handwriting;
+                      Enter still submits, Shift+Enter makes a line break */}
+                  <textarea
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault()
+                        e.currentTarget.form?.requestSubmit()
+                      }
+                    }}
                     placeholder=" "
                     aria-label="Din gissning"
                     required
+                    rows={3}
                     className="hand-input"
                   />
                 </form>
