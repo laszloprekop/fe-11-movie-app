@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { buildClues, drawRound, isCorrectGuess, longestWinStreak, maskSynopsis, normalize, roundScore, sessionLength } from "./quiz"
+import { buildClues, drawRound, isCorrectGuess, longestWinStreak, maskSynopsis, normalize, roundScore, sessionLength, suggestTitles } from "./quiz"
 
 describe("normalize", () => {
   it("lowercases, trims and collapses whitespace", () => {
@@ -165,6 +165,35 @@ describe("the session pool", () => {
       pool = draw.rest
     }
     expect(new Set(seen).size).toBe(seen.length)
+  })
+})
+
+describe("suggestTitles", () => {
+  const titles = [
+    "Forrest Gump",
+    "The Shawshank Redemption",
+    "Lost in Translation",
+    "Groundhog Day",
+    "March of the Penguins",
+    "Her",
+  ]
+
+  it("stays quiet under two typed characters", () => {
+    expect(suggestTitles(titles, "s")).toEqual([])
+    expect(suggestTitles(titles, "  s ")).toEqual([])
+  })
+
+  it("matches through normalize — case and punctuation blind", () => {
+    expect(suggestTitles(titles, "SHAW")).toEqual(["The Shawshank Redemption"])
+  })
+
+  it("caps the offer at five", () => {
+    const many = ["aa 1", "aa 2", "aa 3", "aa 4", "aa 5", "aa 6"]
+    expect(suggestTitles(many, "aa")).toHaveLength(5)
+  })
+
+  it("goes quiet when the draft already is the only match", () => {
+    expect(suggestTitles(titles, "Her")).toEqual([])
   })
 })
 

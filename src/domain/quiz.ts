@@ -55,6 +55,18 @@ export function drawRound(
   return { movieId: pool[index], rest: pool.toSpliced(index, 1) }
 }
 
+// Offer catalogue titles once the writing starts: two normalized characters
+// in, at most five out — a clue to the array, never a menu. Goes quiet when
+// the draft already is the only match, so a picked title stops suggesting
+// itself.
+export function suggestTitles(titles: string[], draft: string): string[] {
+  const needle = normalize(draft)
+  if (needle.length < 2) return []
+  const hits = titles.filter((title) => normalize(title).includes(needle))
+  if (hits.length === 1 && normalize(hits[0]) === needle) return []
+  return hits.slice(0, 5)
+}
+
 // The best streak of a finished session, read straight off the score list:
 // invariant 1 guarantees a win never pays 0, so "positive score" *is* "won".
 export function longestWinStreak(scores: number[]): number {
