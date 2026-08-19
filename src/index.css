@@ -93,6 +93,11 @@ h1::after {
   .burst::after {
     animation: none;
   }
+
+  /* the stamp still informs — it fades without the scale hit */
+  .stamp {
+    animation: stamp-fade 2.8s ease-out forwards;
+  }
 }
 
 /* Inverse video marks the current place — terminal selection, not underline. */
@@ -570,6 +575,51 @@ button.on-card {
 .label-write:has(.hand-input:focus)::after,
 .label-write:has(.hand-input:not(:placeholder-shown))::after {
   display: none;
+}
+
+/* A wrong guess gets stamped over the label in the stripe red — it hits,
+   holds a beat, and fades. The status row keeps the running count. */
+.stamp {
+  position: absolute;
+  z-index: 2;
+  left: 126px;
+  top: 76px;
+  padding: 4px 12px;
+  border: 3px solid var(--stripe-3);
+  color: var(--stripe-3);
+  font-family: Anton, "Arial Narrow", Impact, sans-serif;
+  font-size: 24px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transform: rotate(-8deg);
+  pointer-events: none;
+  opacity: 0;
+  animation: stamp-hit 2.8s ease-out forwards;
+}
+@keyframes stamp-hit {
+  0% {
+    opacity: 0;
+    transform: rotate(-8deg) scale(1.7);
+  }
+  8% {
+    opacity: 0.92;
+    transform: rotate(-8deg) scale(1);
+  }
+  72% {
+    opacity: 0.92;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes stamp-fade {
+  0%,
+  72% {
+    opacity: 0.92;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 /* The finale: a rental receipt of tape spines. */

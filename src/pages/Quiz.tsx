@@ -445,6 +445,12 @@ export default function Quiz() {
                 </form>
               )}
             </div>
+            {!settled && state.wrongGuesses > 0 && (
+              // keyed by the miss count so every wrong guess stamps again
+              <div key={state.wrongGuesses} className="stamp" aria-hidden="true">
+                Fel gissning
+              </div>
+            )}
           </div>
         </div>
 
