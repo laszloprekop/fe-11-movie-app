@@ -38,6 +38,45 @@ export function isCorrectGuess(guess: string, title: string): boolean {
   return normalized !== "" && normalized === normalize(title)
 }
 
+// The domain's own movie shape — the quiz rules survive an API reshape
+// because only the page that fetches knows the DTO. All display strings are
+// built here so the ladder is testable without a renderer.
+export type QuizMovie = {
+  title: string
+  year: number
+  duration: number
+  language: string | null
+  genre: string
+  actors: string[]
+  synopsis: string | null
+}
+
+export type Clue = { label: string; value: string; cost: number }
+
+// The ladder is fixed: cheapest information first, the free opener at the
+// top, the masked synopsis last — mechanics.md's table as data.
+export function buildClues(movie: QuizMovie): Clue[] {
+  return [
+    {
+      label: "Speltid & språk",
+      value: `${movie.duration} min · ${movie.language ?? "okänt språk"}`,
+      cost: 0,
+    },
+    { label: "År", value: String(movie.year), cost: CLUE_COST },
+    { label: "Genre", value: movie.genre, cost: CLUE_COST },
+    {
+      label: "Skådespelare",
+      value: movie.actors.length > 0 ? movie.actors.join(", ") : "okänd ensemble",
+      cost: CLUE_COST,
+    },
+    {
+      label: "Synopsis",
+      value: movie.synopsis ? maskSynopsis(movie.synopsis, movie.title) : "synopsis saknas",
+      cost: CLUE_COST,
+    },
+  ]
+}
+
 // What a finished round knows about itself — facts, not conclusions.
 export type RoundFacts = {
   won: boolean

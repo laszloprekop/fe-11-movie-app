@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { isCorrectGuess, maskSynopsis, normalize, roundScore } from "./quiz"
+import { buildClues, isCorrectGuess, maskSynopsis, normalize, roundScore } from "./quiz"
 
 describe("normalize", () => {
   it("lowercases, trims and collapses whitespace", () => {
@@ -94,5 +94,47 @@ describe("roundScore", () => {
   // Invariant 7, the paying half — the streak reset lives with session state.
   it("pays zero for giving up, whatever the streak", () => {
     expect(roundScore({ won: false, cluesRevealed: 5, wrongGuesses: 2 }, 4)).toBe(0)
+  })
+})
+
+describe("buildClues", () => {
+  const movie = {
+    title: "Her",
+    year: 2013,
+    duration: 126,
+    language: "English",
+    genre: "Drama, Romantik",
+    actors: ["Joaquin Phoenix", "Scarlett Johansson"],
+    synopsis: "Her operating system falls in love.",
+  }
+
+  it("lays the fixed ladder: free opener first, synopsis last", () => {
+    const clues = buildClues(movie)
+    expect(clues.map((c) => c.label)).toEqual([
+      "Speltid & språk",
+      "År",
+      "Genre",
+      "Skådespelare",
+      "Synopsis",
+    ])
+    expect(clues.map((c) => c.cost)).toEqual([0, 150, 150, 150, 150])
+  })
+
+  it("combines duration and language into the free clue", () => {
+    expect(buildClues(movie)[0].value).toBe("126 min · English")
+  })
+
+  it("serves the synopsis masked — Step 39 cashing in", () => {
+    expect(buildClues(movie)[4].value).toBe(
+      "███ operating system falls in love.",
+    )
+  })
+
+  it("names the nulls in Swedish instead of crashing on them", () => {
+    const bare = { ...movie, language: null, synopsis: null, actors: [] }
+    const clues = buildClues(bare)
+    expect(clues[0].value).toBe("126 min · okänt språk")
+    expect(clues[3].value).toBe("okänd ensemble")
+    expect(clues[4].value).toBe("synopsis saknas")
   })
 })
