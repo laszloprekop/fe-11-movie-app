@@ -21,7 +21,7 @@ export default function StatBars({ data, nameKey, valueKey, label, max }: Props)
         <YAxis
           type="category"
           dataKey={nameKey}
-          width={180}
+          width={150}
           tickLine={false}
           axisLine={false}
           tick={{ fill: 'currentColor', fontSize: 14 }}

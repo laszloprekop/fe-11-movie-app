@@ -133,6 +133,12 @@ button.small {
   font-size: 0.85em;
 }
 
+/* Dashboard stat tiles speak the status box's dialect. */
+.stat-tile {
+  border: 1px dashed color-mix(in srgb, var(--accent) 50%, transparent);
+  padding: 12px 16px;
+}
+
 /* Catalogue rows sit on hairlines — one dashed rule per row. */
 .row-line {
   border-bottom: 1px dashed color-mix(in srgb, var(--foreground) 25%, transparent);

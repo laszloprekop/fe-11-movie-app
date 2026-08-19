@@ -32,45 +32,55 @@ export default function Dashboard() {
       {state.status === 'loading' && <p className="mt-4">Räknar ihop statistiken…</p>}
       {state.status === 'error' && <ErrorBanner error={state.error} />}
       {state.status === 'ready' && (
-        <div className="mt-4 grid max-w-3xl gap-8">
-          <section>
-            <h2 className="text-xl font-bold">Genomsnittsbetyg</h2>
-            <p className="mt-2 text-4xl font-bold">
-              {state.dashboard.averageRating ?? '–'}
-              <span className="ml-2 text-base font-normal">
-                av 5, från {state.dashboard.reviewCount} recensioner
-              </span>
-            </p>
-          </section>
+        <div className="mt-4 grid max-w-5xl gap-8">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <div className="stat-tile">
+              <p className="text-xs uppercase tracking-widest opacity-60">Genomsnittsbetyg</p>
+              <p className="mt-1 text-3xl font-bold">
+                {state.dashboard.averageRating ?? '–'}
+                <span className="ml-2 text-sm font-normal opacity-70">av 5</span>
+              </p>
+            </div>
+            <div className="stat-tile">
+              <p className="text-xs uppercase tracking-widest opacity-60">Recensioner</p>
+              <p className="mt-1 text-3xl font-bold">{state.dashboard.reviewCount}</p>
+            </div>
+            <div className="stat-tile">
+              <p className="text-xs uppercase tracking-widest opacity-60">Genrer</p>
+              <p className="mt-1 text-3xl font-bold">{state.dashboard.topRatedPerGenre.length}</p>
+            </div>
+          </div>
 
-          <section>
-            <h2 className="text-xl font-bold">Topp 5 filmer per genre</h2>
-            {state.dashboard.topRatedPerGenre.map((group) => (
-              <div key={group.genre} className="mt-3">
-                <h3 className="font-bold">{group.genre}</h3>
-                {/* Ratings share one scale — max 5 keeps the genres comparable. */}
+          <div className="grid items-start gap-8 lg:grid-cols-[3fr_2fr]">
+            <section>
+              <h2 className="text-xl font-bold">Topp 5 filmer per genre</h2>
+              {state.dashboard.topRatedPerGenre.map((group) => (
+                <div key={group.genre} className="mt-3">
+                  <h3 className="font-bold">{group.genre}</h3>
+                  {/* Ratings share one scale — max 5 keeps the genres comparable. */}
+                  <StatBars
+                    data={group.movies}
+                    nameKey="title"
+                    valueKey="averageRating"
+                    label="Betyg"
+                    max={5}
+                  />
+                </div>
+              ))}
+            </section>
+
+            <section>
+              <h2 className="text-xl font-bold">Mest aktiva skådespelare</h2>
+              <div className="mt-3">
                 <StatBars
-                  data={group.movies}
-                  nameKey="title"
-                  valueKey="averageRating"
-                  label="Betyg"
-                  max={5}
+                  data={state.dashboard.mostActiveActors}
+                  nameKey="name"
+                  valueKey="movieCount"
+                  label="Filmer"
                 />
               </div>
-            ))}
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold">Mest aktiva skådespelare</h2>
-            <div className="mt-2">
-              <StatBars
-                data={state.dashboard.mostActiveActors}
-                nameKey="name"
-                valueKey="movieCount"
-                label="Filmer"
-              />
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
       )}
     </>
