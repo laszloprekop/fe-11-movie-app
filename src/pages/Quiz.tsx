@@ -211,29 +211,37 @@ export default function Quiz() {
             <p className="vhs-label mt-2 opacity-85">Home Entertainment</p>
           </div>
           <div className="stripes tall" />
-          <div className="grid grow content-center justify-items-center gap-4 px-6 py-7 text-center">
-            <span className="sticker">NYHET!</span>
-            <p className="vhs-label">Kvällens fem</p>
-            <p className="max-w-[38ch] text-xs opacity-80">
-              Fem omgångar, en film per omgång — noll nåd. Första ledtråden är
-              gratis; varje ny kostar poäng, varje fel gissning också.
-            </p>
-            <p className="flex items-center gap-2">
-              <span className="vhs-display text-2xl">VHS</span>
-              <span className="font-mono text-[9px] opacity-70">
-                MOVIE APP MEGA X-TREME 3000 · T-120
-              </span>
+          <div className="flex grow flex-col items-center px-6 pt-7 pb-4 text-center">
+            <div className="my-auto grid justify-items-center gap-4">
+              <p className="vhs-label">Kvällens fem</p>
+              <p className="max-w-[38ch] text-xs opacity-80">
+                Fem omgångar, en film per omgång — noll nåd. Första ledtråden är
+                gratis; varje ny kostar poäng, varje fel gissning också.
+              </p>
+              <p className="flex items-center gap-2">
+                <span className="vhs-display text-2xl">VHS</span>
+                <span className="font-mono text-[9px] opacity-70">
+                  MOVIE APP MEGA X-TREME 3000 · T-120
+                </span>
+              </p>
+              {best.total > 0 && (
+                <p className="font-mono text-xs">
+                  Rekord: <strong>{best.total} poäng</strong> · Bästa svit: {best.streak}
+                </p>
+              )}
+              <button
+                className="on-card"
+                onClick={startSession}
+                disabled={state.phase === "loading"}
+              >
+                {state.phase === "loading" ? "Blandar filmerna…" : "Börja kvällens fem"}
+              </button>
+            </div>
+            <p className="colophon">
+              En övning för Lexicon LTU 2026 • En produkt av SyntaxSyndicate
             </p>
           </div>
         </div>
-        {best.total > 0 && (
-          <p className="rekord mt-7 font-mono">
-            Rekord: <strong>{best.total} poäng</strong> · Bästa svit: {best.streak}
-          </p>
-        )}
-        <button className="mt-4" onClick={startSession} disabled={state.phase === "loading"}>
-          {state.phase === "loading" ? "Blandar filmerna…" : "Börja kvällens fem"}
-        </button>
       </div>
     )
   }

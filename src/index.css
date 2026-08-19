@@ -215,6 +215,20 @@ p.alert {
   );
 }
 
+/* A terminal button standing on the cream card retunes to print ink —
+   the button.danger idiom, one more word. */
+button.on-card {
+  --accent: var(--vhs-ink);
+  color: var(--vhs-ink);
+}
+
+/* The colophon: the sleeve's finest print, barely-there ink. */
+.colophon {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  opacity: 0.5;
+}
+
 /* Stickers: teal, ink-framed, slapped on at an angle. */
 .sticker {
   display: inline-block;
