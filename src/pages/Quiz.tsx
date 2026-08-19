@@ -322,18 +322,53 @@ export default function Quiz() {
     state.streak,
   )
 
-  if (state.outcome === "open") {
-    return (
-      <div className="studio">
-        <div className="quiz-grid">
-          <div className="slipcase aspect-[460/523] w-[460px] max-w-full">
-            <div className="slipcase-band px-6 pt-3 pb-3">
-              <p className="vhs-label">Home Entertainment</p>
+  // Boards 02 and 03 are two states of the same objects: one stage, one
+  // sleeve, one tape. The is-settled class drives every transition — the
+  // tape's rotate-slide, the sleeve's width and tilt, the containers' heights.
+  const settled = state.outcome !== "open"
+  const won = state.outcome === "won"
+
+  return (
+    <div className="studio">
+      <div className={settled ? "quiz-stage is-settled" : "quiz-stage"}>
+        <div className="slipcase quiz-case">
+          <div className="slipcase-band">
+            <div className="case-open-only" inert={settled}>
+              <p className="vhs-label px-6 pt-3 pb-3">Gissa filmen</p>
             </div>
-            <div className="stripes" />
-            <div className="flex grow flex-col px-7 pt-5 pb-4">
-              <p className="vhs-display text-2xl">OKÄND FILM — T-{state.movie.duration}</p>
-              <div className="mt-3">
+            <div className="case-settled-only" inert={!settled}>
+              <div className="px-6 pt-8 pb-7">
+                <p className="vhs-display text-[42px]">{state.movie.title.toUpperCase()}</p>
+                <p className="vhs-label mt-2 opacity-85">
+                  {state.movie.year} · {state.movie.genre} · {state.movie.duration} min
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="stripes tall" />
+          <div className="case-open-only" inert={settled}>
+            <div className="px-7 pt-4 pb-4">
+              <div className="status mx-auto mt-1 w-[283px] max-w-full font-mono">
+                <div>
+                  <span>OMGÅNG</span>
+                  <strong>
+                    {state.scores.length + 1} AV {state.totalRounds}
+                  </strong>
+                </div>
+                <div>
+                  <span>VINST JUST NU</span>
+                  <strong className="hot">{prize} POÄNG</strong>
+                </div>
+                <div>
+                  <span>SVIT</span>
+                  <strong>{state.streak > 0 ? state.streak : "—"}</strong>
+                </div>
+                <div>
+                  <span>FEL GISSNINGAR</span>
+                  <strong>{state.wrongGuesses}</strong>
+                </div>
+              </div>
+              <div className="mt-4">
                 {clues.slice(0, state.revealed).map((clue) => (
                   <div key={clue.label} className="spec-row">
                     <span className="spec-label">{clue.label}</span>
@@ -353,7 +388,7 @@ export default function Quiz() {
                   </div>
                 ))}
               </div>
-              <div className="mt-auto flex items-end justify-between gap-4 pt-4">
+              <div className="mt-4 flex items-end justify-between gap-4">
                 <p className="small-print max-w-[36ch]">
                   Otillåten gissning utan poängavdrag är förbjuden enligt husets regler.
                   Ledtrådar säljs styckvis. Ingen ånger. Svit bryts vid uppgivande.
@@ -362,74 +397,8 @@ export default function Quiz() {
               </div>
             </div>
           </div>
-          <div className="w-[400px] max-w-full">
-            <h1 className="text-2xl font-bold">Gissa filmen</h1>
-            <div className="status mt-6 font-mono">
-              <div>
-                <span>OMGÅNG</span>
-                <strong>
-                  {state.scores.length + 1} AV {state.totalRounds}
-                </strong>
-              </div>
-              <div>
-                <span>VINST JUST NU</span>
-                <strong className="hot">{prize} POÄNG</strong>
-              </div>
-              <div>
-                <span>SVIT</span>
-                <strong>{state.streak > 0 ? state.streak : "—"}</strong>
-              </div>
-              <div>
-                <span>FEL GISSNINGAR</span>
-                <strong>{state.wrongGuesses}</strong>
-              </div>
-            </div>
-            <form onSubmit={handleGuess} className="mt-6 grid gap-3">
-              <input
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                placeholder="Vilken film är det?"
-                aria-label="Din gissning"
-                required
-              />
-              <div className="flex gap-3">
-                <button type="submit">Gissa</button>
-                <button type="button" className="muted" onClick={() => dispatch({ type: "gaveUp" })}>
-                  Ge upp
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // round settled: the box turns around, the tape comes out
-  const won = state.outcome === "won"
-  return (
-    <div className="studio">
-      <div className="quiz-grid">
-        <div className="reveal-stage">
-          <div className="tape-wrap" aria-hidden="true">
-            <div className="tape">
-              <div className="tape-strip" />
-              <div className="reel left" />
-              <div className="reel right" />
-              <div className="tape-label">
-                <span className="vhs-hand">{state.movie.title}</span>
-              </div>
-            </div>
-          </div>
-          <div className="slipcase aspect-[400/486] w-[400px] max-w-full">
-            <div className="slipcase-band px-6 pt-8 pb-7">
-              <p className="vhs-display text-[42px]">{state.movie.title.toUpperCase()}</p>
-              <p className="vhs-label mt-2 opacity-85">
-                {state.movie.year} · {state.movie.genre} · {state.movie.duration} min
-              </p>
-            </div>
-            <div className="stripes tall" />
-            <div className="grid grow content-center justify-items-center gap-3 px-6 py-5 text-center">
+          <div className="case-settled-only" inert={!settled}>
+            <div className="grid justify-items-center gap-3 px-6 py-5 text-center">
               {state.movie.synopsis && (
                 <p className="max-w-[44ch] text-xs opacity-80">{state.movie.synopsis}</p>
               )}
@@ -440,44 +409,88 @@ export default function Quiz() {
             </div>
           </div>
         </div>
-        <div className="w-[400px] max-w-full">
-          {won ? (
-            <p>
-              <span className="sticker">RÄTT! +{prize} POÄNG</span>
-            </p>
-          ) : (
-            <p className="text-lg font-bold">Du gav upp — 0 poäng.</p>
-          )}
-          <div className="mt-6 font-mono">
-            <p className="text-sm opacity-60">FILMEN VAR:</p>
-            <p className="mt-1 text-lg font-bold">
-              {state.movie.title} ({state.movie.year})
-            </p>
-          </div>
-          <div className="status mt-6 font-mono">
-            <div>
-              <span>OMGÅNG</span>
-              <strong>
-                {state.scores.length + 1} AV {state.totalRounds}
-              </strong>
-            </div>
-            <div>
-              <span>BANKAT</span>
-              <strong className="hot">{won ? prize : 0} POÄNG</strong>
-            </div>
-            <div>
-              <span>SVIT</span>
-              <strong>{won ? state.streak + 1 : 0}</strong>
+
+        <div className="tape-wrap" aria-hidden={settled}>
+          <div className="tape">
+            <div className="tape-strip" />
+            <div className="reel left" />
+            <div className="reel right" />
+            <div className="tape-label">
+              {settled ? (
+                <span className="vhs-hand">{state.movie.title}</span>
+              ) : (
+                // The guess is written on the tape by hand; the terminal's
+                // block cursor marks the field until the writing starts.
+                <form id="guess-form" onSubmit={handleGuess} className="label-write">
+                  <input
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    placeholder=" "
+                    aria-label="Din gissning"
+                    required
+                    className="hand-input"
+                  />
+                </form>
+              )}
             </div>
           </div>
-          {state.scores.length + 1 < state.totalRounds ? (
-            <button className="mt-6" onClick={nextRound}>
-              Nästa omgång
-            </button>
+        </div>
+
+        <div className="side-panel">
+          {settled ? (
+            <>
+              {won ? (
+                <p>
+                  <span className="sticker">RÄTT! +{prize} POÄNG</span>
+                </p>
+              ) : (
+                <p className="text-lg font-bold">Du gav upp — 0 poäng.</p>
+              )}
+              <div className="mt-6 font-mono">
+                <p className="text-sm opacity-60">FILMEN VAR:</p>
+                <p className="mt-1 text-lg font-bold">
+                  {state.movie.title} ({state.movie.year})
+                </p>
+              </div>
+              <div className="status mt-6 font-mono">
+                <div>
+                  <span>OMGÅNG</span>
+                  <strong>
+                    {state.scores.length + 1} AV {state.totalRounds}
+                  </strong>
+                </div>
+                <div>
+                  <span>BANKAT</span>
+                  <strong className="hot">{won ? prize : 0} POÄNG</strong>
+                </div>
+                <div>
+                  <span>SVIT</span>
+                  <strong>{won ? state.streak + 1 : 0}</strong>
+                </div>
+              </div>
+              {state.scores.length + 1 < state.totalRounds ? (
+                <button className="mt-6" onClick={nextRound}>
+                  Nästa omgång
+                </button>
+              ) : (
+                <button className="mt-6" onClick={() => dispatch({ type: "sessionEnded" })}>
+                  Visa slutresultat
+                </button>
+              )}
+            </>
           ) : (
-            <button className="mt-6" onClick={() => dispatch({ type: "sessionEnded" })}>
-              Visa slutresultat
-            </button>
+            <>
+              <h1 className="text-2xl font-bold">Gissa filmen</h1>
+              <div className="tape-space" />
+              <div className="flex gap-3">
+                <button type="submit" form="guess-form">
+                  Gissa
+                </button>
+                <button type="button" className="muted" onClick={() => dispatch({ type: "gaveUp" })}>
+                  Ge upp
+                </button>
+              </div>
+            </>
           )}
         </div>
       </div>

@@ -44,7 +44,16 @@ h1::after {
     opacity: 0;
   }
 
+  .quiz-stage,
+  .quiz-case,
+  .case-open-only,
+  .case-settled-only,
   .tape-wrap {
+    transition: none;
+  }
+
+  /* the block cursor stays as a static field marker */
+  .label-write::after {
     animation: none;
   }
 }
@@ -242,14 +251,73 @@ button.on-card {
   letter-spacing: 0.04em;
 }
 
-/* The terminal status readout beside the box. */
-.quiz-grid {
+/* One stage for boards 02 and 03: the same sleeve, tape and side panel,
+   morphing between the two boards' states. interpolate-size lets height
+   transition to and from auto, so the printed containers animate to the
+   height their content needs. */
+:root {
+  interpolate-size: allow-keywords;
+}
+
+.quiz-stage {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
   gap: 56px;
   align-items: center;
   justify-content: center;
+  transition: gap 0.7s ease;
 }
+/* the sleeve and panel part, letting the tape out into the light */
+.quiz-stage.is-settled {
+  gap: 210px;
+}
+
+.quiz-case {
+  position: relative;
+  z-index: 1;
+  width: 460px;
+  max-width: 100%;
+  transition: width 0.6s ease, transform 0.6s ease;
+}
+.is-settled .quiz-case {
+  width: 400px;
+  transform: rotate(-2deg);
+}
+
+/* The two content sets share the containers; the inactive one collapses and
+   the band, stripes and cream body animate between their two heights. */
+.case-open-only,
+.case-settled-only {
+  overflow: hidden;
+  height: auto;
+  transition: height 0.55s ease;
+}
+.quiz-case .case-settled-only {
+  height: 0;
+}
+.is-settled .quiz-case .case-open-only {
+  height: 0;
+}
+.is-settled .quiz-case .case-settled-only {
+  height: auto;
+}
+
+/* On the cream card the status prints in ink — hot values stay teal. */
+.quiz-case .status {
+  --accent: var(--vhs-ink);
+  color: var(--vhs-ink);
+}
+
+.side-panel {
+  width: 400px;
+  max-width: 100%;
+}
+/* the open round's panel keeps the tape's flight path clear */
+.tape-space {
+  height: 270px;
+}
+
+/* The terminal status readout. */
 .status {
   border: 1px dashed color-mix(in srgb, var(--accent) 50%, transparent);
   padding: 14px 16px;
@@ -265,44 +333,27 @@ button.on-card {
 .status span { opacity: 0.6; }
 .status .hot { color: var(--cta); }
 
-/* The reveal: the tape stands on end and slides out from behind the sleeve. */
-.reveal-stage {
-  position: relative;
-  /* reserve the tape's overhang — absolute children are invisible to flex */
-  padding-right: 190px;
-}
-.reveal-stage .slipcase {
-  position: relative;
-  z-index: 1;
-  transform: rotate(-2deg);
-}
-/* The wrapper owns place + slide; the cassette inside stays a flat 420×210
-   drawing, stood upright with one rotation — the board's exact geometry. */
+/* One tape for both boards: it lies half under the sleeve while the round is
+   open — the guess is written on its label — then rotate-slides out upright
+   when the round settles. The wrapper owns place and motion; the cassette
+   stays a flat 420×210 drawing. */
 .tape-wrap {
   position: absolute;
   z-index: 0;
   top: 50%;
-  left: 330px;
-  width: 247px;
-  height: 437px;
-  display: grid;
-  place-items: center;
-  transform: translateY(-50%);
-  animation: tape-out 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-@keyframes tape-out {
-  from {
-    transform: translateY(-50%) translateX(-170px);
-  }
-  to {
-    transform: translateY(-50%) translateX(0);
-  }
-}
-.tape {
-  position: relative;
+  left: 0;
   width: 420px;
   height: 210px;
-  transform: rotate(95deg);
+  margin-top: -105px;
+  transform: translateX(415px) rotate(-5deg);
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.is-settled .tape-wrap {
+  transform: translateX(238px) rotate(95deg);
+}
+.tape {
+  position: absolute;
+  inset: 0;
   background: var(--vhs-shell);
   border-radius: 5px;
   box-shadow: 10px 4px 0 3px rgba(0, 0, 0, 0.5);
@@ -379,6 +430,42 @@ button.on-card {
     rgba(58, 167, 187, 0.45) 0 1px,
     transparent 1px 12px
   );
+}
+
+/* The guess is handwriting on the label; the terminal's block cursor marks
+   the empty field and steps aside once the writing starts. */
+.label-write {
+  position: relative;
+  display: block;
+  height: 100%;
+}
+.hand-input {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: "Permanent Marker", cursive;
+  font-size: 18px;
+  text-align: center;
+  color: var(--vhs-ink);
+  caret-color: var(--vhs-ink);
+}
+.label-write::after {
+  content: "▊";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  color: var(--vhs-ink);
+  pointer-events: none;
+  animation: blink 1.2s steps(2, start) infinite;
+}
+.label-write:has(.hand-input:focus)::after,
+.label-write:has(.hand-input:not(:placeholder-shown))::after {
+  display: none;
 }
 
 /* The finale: a rental receipt of tape spines. */
