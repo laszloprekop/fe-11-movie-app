@@ -40,10 +40,11 @@ type QuizState =
       wrongGuesses: number
       outcome: "open" | "won" | "gaveUp"
       scores: number[]
+      played: string[] // finished rounds' titles — the receipt names its tapes
       streak: number
       totalRounds: number
     }
-  | { phase: "done"; scores: number[]; streak: number }
+  | { phase: "done"; scores: number[]; played: string[]; streak: number }
 
 type QuizAction =
   | { type: "loadStarted" }
@@ -68,6 +69,7 @@ function bank(state: Playing) {
   }
   return {
     scores: [...state.scores, roundScore(facts, state.streak)],
+    played: [...state.played, state.movie.title],
     streak: state.outcome === "won" ? state.streak + 1 : 0,
   }
 }
@@ -90,6 +92,7 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
         wrongGuesses: 0,
         outcome: "open",
         scores: [],
+        played: [],
         streak: 0,
         totalRounds: sessionLength(action.catalogueSize),
       }
