@@ -345,10 +345,13 @@ export default function Quiz() {
                   </div>
                 ))}
               </div>
-              <p className="small-print mt-auto pt-4">
-                Otillåten gissning utan poängavdrag är förbjuden enligt husets regler.
-                Ledtrådar säljs styckvis. Ingen ånger. Svit bryts vid uppgivande.
-              </p>
+              <div className="mt-auto flex items-end justify-between gap-4 pt-4">
+                <p className="small-print max-w-[36ch]">
+                  Otillåten gissning utan poängavdrag är förbjuden enligt husets regler.
+                  Ledtrådar säljs styckvis. Ingen ånger. Svit bryts vid uppgivande.
+                </p>
+                <span className="barcode">7 350045 511011</span>
+              </div>
             </div>
           </div>
           <div className="w-[400px] max-w-full">
@@ -422,6 +425,7 @@ export default function Quiz() {
               <p className="vhs-label">
                 {state.movie.actors.length > 0 ? state.movie.actors.join(" · ") : "Okänd ensemble"}
               </p>
+              <span className="barcode">7 350045 511011</span>
             </div>
           </div>
         </div>

@@ -186,6 +186,31 @@ p.alert {
   opacity: 0.65;
 }
 
+/* The barcode: printed matter, drawn in CSS — the bars are one repeating
+   gradient, the digits are real text. */
+.barcode {
+  display: inline-grid;
+  gap: 4px;
+  justify-items: start;
+  background: #fff;
+  color: var(--vhs-ink);
+  padding: 8px 10px 6px;
+  font-family: var(--font-stack, monospace);
+  font-size: 9px;
+}
+.barcode::before {
+  content: "";
+  height: 38px;
+  width: 84px;
+  background: repeating-linear-gradient(
+    to right,
+    var(--vhs-ink) 0 3px, transparent 3px 5px,
+    var(--vhs-ink) 5px 6px, transparent 6px 9px,
+    var(--vhs-ink) 9px 11px, transparent 11px 12px,
+    var(--vhs-ink) 12px 13px, transparent 13px 16px
+  );
+}
+
 /* Stickers: teal, ink-framed, slapped on at an angle. */
 .sticker {
   display: inline-block;
