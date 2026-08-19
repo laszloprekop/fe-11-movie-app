@@ -214,18 +214,12 @@ export default function Quiz() {
           <div className="flex grow flex-col items-center px-6 pt-7 pb-4 text-center">
             <div className="my-auto grid justify-items-center gap-4">
               <p className="vhs-label">Kvällens fem</p>
-              <p className="max-w-[38ch] text-xs opacity-80">
+              <p className="max-w-[38ch] text-base opacity-80">
                 Fem omgångar, en film per omgång — noll nåd. Första ledtråden är
                 gratis; varje ny kostar poäng, varje fel gissning också.
               </p>
-              <p className="flex items-center gap-2">
-                <span className="vhs-display text-2xl">VHS</span>
-                <span className="font-mono text-[9px] opacity-70">
-                  MOVIE APP MEGA X-TREME 3000 · T-120
-                </span>
-              </p>
               {best.total > 0 && (
-                <p className="font-mono text-xs">
+                <p className="font-mono text-base">
                   Rekord: <strong>{best.total} poäng</strong> · Bästa svit: {best.streak}
                 </p>
               )}
@@ -237,9 +231,17 @@ export default function Quiz() {
                 {state.phase === "loading" ? "Blandar filmerna…" : "Börja kvällens fem"}
               </button>
             </div>
-            <p className="colophon">
-              En övning för Lexicon LTU 2026 • En produkt av SyntaxSyndicate
-            </p>
+            <div className="mt-auto grid justify-items-center gap-2 pt-4">
+              <p className="flex items-center gap-2">
+                <span className="vhs-display text-2xl">VHS</span>
+                <span className="font-mono text-[9px] opacity-70">
+                  MOVIE APP MEGA X-TREME 3000 · T-120
+                </span>
+              </p>
+              <p className="colophon">
+                En övning för Lexicon LTU 2026 • En produkt av SyntaxSyndicate
+              </p>
+            </div>
           </div>
         </div>
       </div>
