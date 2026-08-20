@@ -353,7 +353,19 @@ export default function Quiz() {
             </div>
             <div className="case-settled-only" inert={!settled}>
               <div className="px-6 pt-8 pb-7">
-                <p className="vhs-display text-[42px]">{state.movie.title.toUpperCase()}</p>
+                {/* long titles step down instead of wrapping into a wall —
+                    the chart ticks' poor man's scale-to-fit */}
+                <p
+                  className={
+                    state.movie.title.length > 28
+                      ? "vhs-display text-2xl"
+                      : state.movie.title.length > 16
+                        ? "vhs-display text-[32px]"
+                        : "vhs-display text-[42px]"
+                  }
+                >
+                  {state.movie.title.toUpperCase()}
+                </p>
                 <p className="vhs-label mt-2 opacity-85">
                   {state.movie.year} · {state.movie.genre} · {state.movie.duration} min
                 </p>

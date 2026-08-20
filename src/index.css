@@ -209,6 +209,9 @@ p.alert {
 .vhs-display {
   font-family: Anton, "Arial Narrow", Impact, sans-serif;
   letter-spacing: 0.02em;
+  /* own leading: the shell's absolute line-height would stack 42px
+     capitals onto 25px lines and overlap them */
+  line-height: 1.08;
 }
 .vhs-label {
   font-family: Helvetica, Arial, sans-serif;
