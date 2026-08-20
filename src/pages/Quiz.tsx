@@ -405,8 +405,8 @@ export default function Quiz() {
                   </div>
                 ))}
               </div>
-              <div className="mt-4 flex items-center justify-between gap-4">
-                <p className="small-print flex h-[68px] max-w-[38ch] flex-col justify-center">
+              <div className="mt-4 flex items-end justify-between gap-4">
+                <p className="small-print max-w-[38ch]">
                   Otillåten gissning utan poängavdrag är förbjuden enligt husets regler.
                   Ledtrådar säljs styckvis. Ingen ånger. Svit bryts vid uppgivande.
                 </p>
