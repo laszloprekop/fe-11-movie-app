@@ -658,6 +658,9 @@ button.on-card {
   text-align: center;
   color: var(--vhs-ink);
   caret-color: var(--vhs-ink);
+  /* the terminal's chunky block, not the system's thin line — browsers
+     without caret-shape keep the line and lose nothing */
+  caret-shape: block;
 }
 .label-cursor {
   position: absolute;
