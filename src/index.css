@@ -560,6 +560,10 @@ button.on-card {
   box-shadow: 10px 4px 0 3px rgba(0, 0, 0, 0.5);
   overflow: hidden;
 }
+/* while the round is open, the whole cassette is the writing surface */
+.quiz-stage:not(.is-settled) .tape {
+  cursor: text;
+}
 /* the studio light falls across the shell — one diagonal gradient */
 .tape::after {
   content: "";

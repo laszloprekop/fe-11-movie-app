@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState, type SubmitEvent } from "react"
+import { useEffect, useReducer, useRef, useState, type SubmitEvent } from "react"
 import { getMovieDetails, getMovies } from "../api/movies"
 import type { MovieDetailDto } from "../api/types"
 import ErrorBanner from "../components/ErrorBanner"
@@ -144,6 +144,7 @@ function quizReducer(state: QuizState, action: QuizAction): QuizState {
 export default function Quiz() {
   const [state, dispatch] = useReducer(quizReducer, { phase: "idle" })
   const [draft, setDraft] = useState("")
+  const guessRef = useRef<HTMLTextAreaElement>(null)
 
   // Lazy initial state: useState(readBest) reads storage once, on mount —
   // useState(readBest()) would read it again on every render.
@@ -427,7 +428,11 @@ export default function Quiz() {
         </div>
 
         <div className="tape-wrap" aria-hidden={settled}>
-          <div className="tape">
+          {/* the whole cassette is the click target for the pen */}
+          <div
+            className="tape"
+            onClick={settled ? undefined : () => guessRef.current?.focus()}
+          >
             <div className="tape-strip" />
             <div className="reel left" />
             <div className="reel right" />
@@ -441,6 +446,8 @@ export default function Quiz() {
                   {/* a textarea, so a long title wraps like real handwriting;
                       Enter still submits, Shift+Enter makes a line break */}
                   <textarea
+                    ref={guessRef}
+                    autoFocus
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
                     onKeyDown={(e) => {
