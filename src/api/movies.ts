@@ -17,10 +17,13 @@ export type MovieFilters = {
 
 export function getMovies(filters: MovieFilters = {}): Promise<MovieDto[]> {
   const params = new URLSearchParams()
+  // The list endpoint pages at 10, and every caller here wants the whole
+  // catalogue. 100 = the API's MaxPageSize = the seeded catalogue size;
+  // film #101 turns this line into a pager loop over X-Pagination.
+  params.set("pageSize", "100")
   if (filters.title) params.set("title", filters.title)
   if (filters.genre) params.set("genre", filters.genre)
-  const query = params.toString()
-  return request<MovieDto[]>(query ? `/api/movies?${query}` : "/api/movies")
+  return request<MovieDto[]>(`/api/movies?${params.toString()}`)
 }
 
 export function createMovie(draft: MovieCreateDto): Promise<MovieDto> {
