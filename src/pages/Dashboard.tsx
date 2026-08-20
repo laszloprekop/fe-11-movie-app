@@ -51,11 +51,18 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="grid items-start gap-8 lg:grid-cols-[3fr_2fr]">
-            <section>
-              <h2 className="text-xl font-bold">Topp 5 filmer per genre</h2>
-              {state.dashboard.topRatedPerGenre.map((group) => (
-                <div key={group.genre} className="mt-3">
+          {/* Masonry via CSS columns: cards fill the shortest column and
+              refuse to break. Unrated movies (and genres left empty by the
+              filter) never chart — a bar of nothing says nothing. */}
+          <div className="columns-1 gap-8 md:columns-2 xl:columns-3">
+            {state.dashboard.topRatedPerGenre
+              .map((group) => ({
+                ...group,
+                movies: group.movies.filter((m) => m.reviewCount > 0),
+              }))
+              .filter((group) => group.movies.length > 0)
+              .map((group) => (
+                <section key={group.genre} className="mb-8 break-inside-avoid">
                   <h3 className="font-bold">{group.genre}</h3>
                   {/* Ratings share one scale — max 5 keeps the genres comparable. */}
                   <StatBars
@@ -65,20 +72,16 @@ export default function Dashboard() {
                     label="Betyg"
                     max={5}
                   />
-                </div>
+                </section>
               ))}
-            </section>
-
-            <section>
-              <h2 className="text-xl font-bold">Mest aktiva skådespelare</h2>
-              <div className="mt-3">
-                <StatBars
-                  data={state.dashboard.mostActiveActors}
-                  nameKey="name"
-                  valueKey="movieCount"
-                  label="Filmer"
-                />
-              </div>
+            <section className="mb-8 break-inside-avoid">
+              <h3 className="font-bold">Mest aktiva skådespelare</h3>
+              <StatBars
+                data={state.dashboard.mostActiveActors}
+                nameKey="name"
+                valueKey="movieCount"
+                label="Filmer"
+              />
             </section>
           </div>
         </div>
