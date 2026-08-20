@@ -474,18 +474,21 @@ export default function Quiz() {
               </div>
             )}
           </div>
-          {suggestions.length > 0 && (
-            <ul className="label-suggest">
-              {suggestions.map((title) => (
-                <li key={title}>
-                  <button type="button" onClick={() => setDraft(title)}>
-                    {title}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
+
+        {/* stage-level, above the theme's position:relative buttons — inside
+            the tape it would paint under them */}
+        {suggestions.length > 0 && (
+          <ul className="label-suggest">
+            {suggestions.map((title) => (
+              <li key={title}>
+                <button type="button" onClick={() => setDraft(title)}>
+                  {title}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
 
         <div className="side-panel">
           {settled ? (

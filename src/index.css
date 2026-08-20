@@ -63,6 +63,12 @@ h1::after {
   .tape-space {
     display: none;
   }
+
+  /* the list joins the column flow, right under the cassette */
+  .label-suggest {
+    position: static;
+    margin-top: 8px;
+  }
 }
 
 @media (max-width: 500px) {
@@ -679,12 +685,15 @@ button.on-card {
 }
 
 /* Autocomplete: catalogue titles offered as label offcuts hanging under the
-   write-on label — click fills the draft; the guess still must be submitted. */
+   write-on label — click fills the draft; the guess still must be submitted.
+   Stage-level and z-raised: the theme's buttons are position:relative and
+   would otherwise paint over the list. Coordinates mirror the tape's resting
+   place (translateX 415 + label at 118/58, 128 tall). */
 .label-suggest {
   position: absolute;
   z-index: 2;
-  left: 118px;
-  top: 192px;
+  left: 533px;
+  top: calc(50% + 87px);
   width: 190px;
   margin: 0;
   padding: 0;
