@@ -394,12 +394,22 @@ button.on-card {
   max-width: 100%;
   min-height: var(--case-min);
   transition: width 0.6s ease, transform 0.6s ease;
+  /* rotated print renders on the GPU without an antialiased halo */
+  backface-visibility: hidden;
+}
+.tape,
+.tape-label {
+  backface-visibility: hidden;
 }
 .is-settled .quiz-case {
   width: 400px;
-  /* the reveal face is a shorter box by design (board 03) */
-  min-height: 0;
   transform: rotate(-2deg);
+}
+/* the reveal body fills the shared height, its content centered */
+.is-settled .quiz-case > .case-settled-only:last-child {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 /* The two content sets share the containers; the inactive one collapses and
