@@ -146,8 +146,11 @@ nav a.quiz-link::before {
   vertical-align: middle;
   background: linear-gradient(
     to bottom,
-    var(--stripe-1) 0 20%, var(--stripe-2) 20% 40%, var(--stripe-3) 40% 60%,
-    var(--stripe-4) 60% 80%, var(--stripe-5) 80% 100%
+    var(--stripe-1) 0 20%,
+    var(--stripe-2) 20% 40%,
+    var(--stripe-3) 40% 60%,
+    var(--stripe-4) 60% 80%,
+    var(--stripe-5) 80% 100%
   );
 }
 
@@ -175,7 +178,8 @@ button.small {
 
 /* Catalogue rows sit on hairlines — one dashed rule per row. */
 .row-line {
-  border-bottom: 1px dashed color-mix(in srgb, var(--foreground) 25%, transparent);
+  border-bottom: 1px dashed
+    color-mix(in srgb, var(--foreground) 25%, transparent);
 }
 
 /* Errors speak in the terminal's own alert voice. */
@@ -198,10 +202,26 @@ p.alert {
   flex-direction: column;
   align-items: center;
   background:
-    radial-gradient(ellipse 46% 5% at 50% 82%, rgba(236, 234, 229, 0.16), transparent 70%),
-    radial-gradient(ellipse 30% 55% at 50% 0%, rgba(236, 234, 229, 0.10), transparent 65%),
-    radial-gradient(ellipse 70% 40% at 50% 55%, rgba(236, 234, 229, 0.05), transparent 70%),
-    radial-gradient(ellipse 110% 110% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.55)),
+    radial-gradient(
+      ellipse 46% 5% at 50% 82%,
+      rgba(236, 234, 229, 0.16),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 30% 55% at 50% 0%,
+      rgba(236, 234, 229, 0.1),
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 70% 40% at 50% 55%,
+      rgba(236, 234, 229, 0.05),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 110% 110% at 50% 45%,
+      transparent 55%,
+      rgba(0, 0, 0, 0.55)
+    ),
     #080d10;
 }
 
@@ -244,30 +264,45 @@ p.alert {
   background: var(--vhs-card);
   color: var(--vhs-ink);
   font-family: Helvetica, Arial, sans-serif;
-  box-shadow: 10px 12px 0 rgba(0, 0, 0, 0.55);
+  /* two fringes, two seals: the inset hairline darkens the box's own outer
+     edge, the band's outline (below) covers its seam — both are needed */
+  box-shadow:
+    10px 12px 0 rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(8, 13, 16, 1);
 }
 .slipcase-band {
   /* the studio light grazes the box: a faint sheen in the top-left corner */
   background:
-    radial-gradient(ellipse 55% 85% at 10% 0%, rgba(236, 234, 229, 0.09), transparent 60%),
+    radial-gradient(
+      ellipse 55% 85% at 10% 0%,
+      rgba(236, 234, 229, 0.09),
+      transparent 60%
+    ),
     var(--vhs-band);
   color: var(--vhs-card);
   text-align: center;
   /* rotation antialiasing lets the parent's cream fringe around the band's
      edge — a same-color outline paints 1px outside the box and covers it
-     (Laszlo's find; an inset hairline on the sleeve did nothing) */
+     (Laszlo's find; works together with the sleeve's inset hairline) */
   outline: 1px solid var(--vhs-band);
 }
 .stripes {
   height: 40px;
   background: linear-gradient(
     to bottom,
-    var(--stripe-1) 0 20%, var(--stripe-2) 20% 40%, var(--stripe-3) 40% 60%,
-    var(--stripe-4) 60% 80%, var(--stripe-5) 80% 100%
+    var(--stripe-1) 0 20%,
+    var(--stripe-2) 20% 40%,
+    var(--stripe-3) 40% 60%,
+    var(--stripe-4) 60% 80%,
+    var(--stripe-5) 80% 100%
   );
 }
-.stripes.tall { height: 80px; }
-.stripes.thin { height: 8px; }
+.stripes.tall {
+  height: 80px;
+}
+.stripes.thin {
+  height: 8px;
+}
 
 /* The clue ladder IS the back of the box: a spec table. Revealed rows stack
    label over value so long values never fight a label column. */
@@ -339,10 +374,14 @@ p.alert {
   width: 84px;
   background: repeating-linear-gradient(
     to right,
-    var(--vhs-ink) 0 3px, transparent 3px 5px,
-    var(--vhs-ink) 5px 6px, transparent 6px 9px,
-    var(--vhs-ink) 9px 11px, transparent 11px 12px,
-    var(--vhs-ink) 12px 13px, transparent 13px 16px
+    var(--vhs-ink) 0 3px,
+    transparent 3px 5px,
+    var(--vhs-ink) 5px 6px,
+    transparent 6px 9px,
+    var(--vhs-ink) 9px 11px,
+    transparent 11px 12px,
+    var(--vhs-ink) 12px 13px,
+    transparent 13px 16px
   );
 }
 
@@ -400,7 +439,9 @@ button.on-card {
   width: 460px;
   max-width: 100%;
   min-height: var(--case-min);
-  transition: width 0.6s ease, transform 0.6s ease;
+  transition:
+    width 0.6s ease,
+    transform 0.6s ease;
   /* rotated print renders on the GPU without an antialiased halo */
   backface-visibility: hidden;
 }
@@ -488,54 +529,84 @@ button.on-card {
   0% {
     opacity: 1;
     box-shadow:
-      0 0 0 #c9950c, 0 0 0 #a87a08, 0 0 0 #c9950c, 0 0 0 #a87a08,
-      0 0 0 #c9950c, 0 0 0 #a87a08, 0 0 0 #c9950c, 0 0 0 #a87a08;
+      0 0 0 #c9950c,
+      0 0 0 #a87a08,
+      0 0 0 #c9950c,
+      0 0 0 #a87a08,
+      0 0 0 #c9950c,
+      0 0 0 #a87a08,
+      0 0 0 #c9950c,
+      0 0 0 #a87a08;
   }
   26%,
   40% {
     opacity: 0;
     box-shadow:
-      -78px -52px 0 #c9950c, 66px -64px 0 #a87a08, 90px 22px 0 #c9950c,
-      -84px 30px 0 #a87a08, 20px -88px 0 #c9950c, -30px 78px 0 #a87a08,
-      64px 62px 0 #c9950c, -60px -20px 0 #a87a08;
+      -78px -52px 0 #c9950c,
+      66px -64px 0 #a87a08,
+      90px 22px 0 #c9950c,
+      -84px 30px 0 #a87a08,
+      20px -88px 0 #c9950c,
+      -30px 78px 0 #a87a08,
+      64px 62px 0 #c9950c,
+      -60px -20px 0 #a87a08;
   }
   41% {
     opacity: 1;
     box-shadow:
-      0 0 0 #a87a08, 0 0 0 #c9950c, 0 0 0 #a87a08, 0 0 0 #c9950c,
-      0 0 0 #a87a08, 0 0 0 #c9950c, 0 0 0 #a87a08, 0 0 0 #c9950c;
+      0 0 0 #a87a08,
+      0 0 0 #c9950c,
+      0 0 0 #a87a08,
+      0 0 0 #c9950c,
+      0 0 0 #a87a08,
+      0 0 0 #c9950c,
+      0 0 0 #a87a08,
+      0 0 0 #c9950c;
   }
   72%,
   100% {
     opacity: 0;
     box-shadow:
-      44px -80px 0 #a87a08, -92px -12px 0 #c9950c, 12px 84px 0 #a87a08,
-      86px 40px 0 #c9950c, -52px -68px 0 #a87a08, 70px -30px 0 #c9950c,
-      -38px 56px 0 #a87a08, -74px 34px 0 #c9950c;
+      44px -80px 0 #a87a08,
+      -92px -12px 0 #c9950c,
+      12px 84px 0 #a87a08,
+      86px 40px 0 #c9950c,
+      -52px -68px 0 #a87a08,
+      70px -30px 0 #c9950c,
+      -38px 56px 0 #a87a08,
+      -74px 34px 0 #c9950c;
   }
 }
 @keyframes burst-stars {
   0% {
     opacity: 1;
     transform: scale(0.4);
-    text-shadow: 0 0 #a87a08, 0 0 #c9950c;
+    text-shadow:
+      0 0 #a87a08,
+      0 0 #c9950c;
   }
   30%,
   44% {
     opacity: 0;
     transform: scale(1.1) rotate(20deg);
-    text-shadow: -60px -40px #a87a08, 55px -50px #c9950c;
+    text-shadow:
+      -60px -40px #a87a08,
+      55px -50px #c9950c;
   }
   45% {
     opacity: 1;
     transform: scale(0.5) rotate(-10deg);
-    text-shadow: 0 0 #c9950c, 0 0 #a87a08;
+    text-shadow:
+      0 0 #c9950c,
+      0 0 #a87a08;
   }
   76%,
   100% {
     opacity: 0;
     transform: scale(1.2) rotate(-30deg);
-    text-shadow: 48px -56px #c9950c, -64px 24px #a87a08;
+    text-shadow:
+      48px -56px #c9950c,
+      -64px 24px #a87a08;
   }
 }
 
@@ -557,7 +628,9 @@ button.on-card {
   /* labels are wayfinding, not content — they may stay small */
   font-size: 13px;
 }
-.status .hot { color: var(--cta); }
+.status .hot {
+  color: var(--cta);
+}
 
 /* One tape for both boards: it lies half under the sleeve while the round is
    open — the guess is written on its label — then rotate-slides out upright
@@ -616,7 +689,12 @@ button.on-card {
   position: absolute;
   border-radius: 50%;
   /* spool stack in one gradient: hub, ring, disc — the boards' reel colors */
-  background: radial-gradient(circle, #41403f 0 9px, #4a4947 9px 26px, #0f161a 26px 100%);
+  background: radial-gradient(
+    circle,
+    #41403f 0 9px,
+    #4a4947 9px 26px,
+    #0f161a 26px 100%
+  );
 }
 .tape .reel.left {
   top: 66px;
@@ -646,8 +724,10 @@ button.on-card {
   line-height: 1.2;
   padding: 8px 6px;
   overflow: hidden;
-  /* the band's outline trick, in the shell's color — no cream fringe */
+  /* both seals, like the sleeve: outline covers the seam, the inset
+     hairline darkens the label's own edge */
   outline: 1px solid var(--vhs-shell);
+  box-shadow: inset 0 0 0 1px rgba(8, 13, 16, 0.4);
 }
 /* ruled lines under the handwriting, like a real rental label */
 .tape-label::after {
@@ -817,11 +897,21 @@ button.on-card {
   align-self: stretch;
   border-radius: 3px 0 0 3px;
 }
-.spine:nth-child(1) .cap { background: var(--stripe-1); }
-.spine:nth-child(2) .cap { background: var(--stripe-2); }
-.spine:nth-child(3) .cap { background: var(--stripe-3); }
-.spine:nth-child(4) .cap { background: var(--stripe-4); }
-.spine:nth-child(5) .cap { background: var(--stripe-5); }
+.spine:nth-child(1) .cap {
+  background: var(--stripe-1);
+}
+.spine:nth-child(2) .cap {
+  background: var(--stripe-2);
+}
+.spine:nth-child(3) .cap {
+  background: var(--stripe-3);
+}
+.spine:nth-child(4) .cap {
+  background: var(--stripe-4);
+}
+.spine:nth-child(5) .cap {
+  background: var(--stripe-5);
+}
 .spine .spine-label {
   flex: 1;
   display: flex;
