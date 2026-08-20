@@ -96,6 +96,7 @@ export type MovieDetailDto = {
   duration: number
   synopsis: string | null
   language: string | null
+  director: string | null
   budget: number | null
   reviews: ReviewDto[]
   actors: MovieActorsDto[]

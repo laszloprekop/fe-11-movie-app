@@ -97,6 +97,7 @@ export default function MovieDetails() {
           </h1>
           <p className="mt-1 text-sm">
             {state.movie.genre} · {state.movie.duration} min
+            {state.movie.director && <> · regi {state.movie.director}</>}
             {state.movie.language && <> · {state.movie.language}</>}
             {state.movie.budget !== null && (
               <> · budget {state.movie.budget.toLocaleString("sv-SE")} USD</>
