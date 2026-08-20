@@ -416,7 +416,7 @@ export default function Quiz() {
             </div>
           </div>
           <div className="case-settled-only" inert={!settled}>
-            <div className="grid justify-items-center gap-3 px-6 py-5 text-center">
+            <div className="grid grow content-evenly justify-items-center gap-3 px-6 py-5 text-center">
               {state.movie.synopsis && (
                 <p className="max-w-[44ch] text-base opacity-80">{state.movie.synopsis}</p>
               )}
