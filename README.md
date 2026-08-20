@@ -60,10 +60,12 @@ flowchart LR
 ## Gissa filmen
 
 A quiz built from the catalogue's own data — read-only against the API, so the audience
-can play the hosted client live. One round: the free clue opens (speltid + språk); every
-further clue costs 150 points, every wrong guess 100, and a correct guess never pays
-under 100. Five rounds make *kvällens fem*; a movie never repeats within a session. Best
-total and best streak persist in `localStorage`.
+can play the hosted client live. One round: the free clue opens with the year, the
+length and a supporting name; each of the three further clues — språk & genre, the
+ensemble, the masked synopsis — costs 150 points, every wrong guess 100, and a correct
+guess never pays under 100. Five rounds make *kvällens fem* out of a hundred-film
+catalogue; a movie never repeats within a session. Typing offers title suggestions
+straight from the catalogue. Best total and best streak persist in `localStorage`.
 
 ![Gissa filmen](docs/screenshots/05-gissa-filmen.png)
 
@@ -84,10 +86,7 @@ the answer.
 - [x] Terminal look — [terminal.css](https://panr.github.io/terminal-css/) theme over Tailwind
 - [x] API work driven by the client: CORS, `GET /api/genres`, a title search filter, cast roles, a reports endpoint, a review-response bug found and fixed
 - [x] ⋆✴︎˚｡⋆ **Gissa filmen** ⟡˙⋆ — clue ladder, streaks, records; the rules are tested pure functions
-
-**Planned**
-
-- [ ] fuzzy guess matching — deliberately out of v1, until live play proves the need
+- [x] A8 — the catalogue grows to 100 films of the 90s and 00s, every film with a director; the guess field autocompletes from the catalogue (fuzzy matching retired by it)
 
 ## Stack
 
