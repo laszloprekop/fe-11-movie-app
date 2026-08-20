@@ -259,18 +259,19 @@ p.alert {
 .stripes.tall { height: 80px; }
 .stripes.thin { height: 8px; }
 
-/* The clue ladder IS the back of the box: a spec table. */
+/* The clue ladder IS the back of the box: a spec table. Revealed rows stack
+   label over value so long values never fight a label column. */
 .spec-row {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-block: 9px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding-block: 8px;
   border-bottom: 1.5px solid var(--vhs-ink);
   font-size: 16px;
 }
 .spec-row .spec-label {
   /* labels are wayfinding, not content — they may stay small */
-  flex: 0 0 130px;
   font-size: 11px;
   font-weight: bold;
   letter-spacing: 0.1em;
@@ -285,6 +286,10 @@ p.alert {
 }
 
 .spec-row.locked {
+  /* a locked rung has nothing to wrap — it stays a single line */
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
   border-bottom-style: dashed;
   color: color-mix(in srgb, var(--vhs-ink) 45%, transparent);
 }
