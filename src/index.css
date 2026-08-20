@@ -224,9 +224,12 @@ p.alert {
 
 /* Print sets its own rhythm: the terminal shell's 25px paragraph margins
    (terminal.css) stay outside the box — on the slipcase, spacing comes from
-   the layout gaps alone. */
-.slipcase p {
-  margin: 0;
+   the layout gaps alone. Layered as components so mt-* utilities still win;
+   unlayered, this rule would silently eat them. */
+@layer components {
+  .slipcase p {
+    margin: 0;
+  }
 }
 
 /* The slipcase: cream card, ink print, hard offset shadow — a thing, not a panel.
