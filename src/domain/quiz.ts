@@ -88,6 +88,7 @@ export type QuizMovie = {
   duration: number
   language: string | null
   genre: string
+  director: string | null
   actors: string[]
   synopsis: string | null
 }
@@ -111,6 +112,9 @@ export function buildClues(movie: QuizMovie): Clue[] {
       value: `${movie.language ?? "okänt språk"} · ${movie.genre}`,
       cost: CLUE_COST,
     },
+    // the director narrows harder than genre, softer than the ensemble —
+    // hence the middle rung, never the free opener
+    { label: "Regi", value: movie.director ?? "okänd regissör", cost: CLUE_COST },
     {
       label: "Skådespelare",
       value: movie.actors.length > 0 ? movie.actors.join(", ") : "okänd ensemble",

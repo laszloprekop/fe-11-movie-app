@@ -23,6 +23,7 @@ function toQuizMovie(details: MovieDetailDto): QuizMovie {
     duration: details.duration,
     language: details.language,
     genre: details.genre,
+    director: details.director,
     actors: details.actors.map((actor) => actor.name),
     synopsis: details.synopsis,
   }

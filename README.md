@@ -61,8 +61,8 @@ flowchart LR
 
 A quiz built from the catalogue's own data — read-only against the API, so the audience
 can play the hosted client live. One round: the free clue opens with the year, the
-length and a supporting name; each of the three further clues — språk & genre, the
-ensemble, the masked synopsis — costs 150 points, every wrong guess 100, and a correct
+length and a supporting name; each of the four further clues — språk & genre, the
+director, the ensemble, the masked synopsis — costs 150 points, every wrong guess 100, and a correct
 guess never pays under 100. Five rounds make *kvällens fem* out of a hundred-film
 catalogue; a movie never repeats within a session. Typing offers title suggestions
 straight from the catalogue. Best total and best streak persist in `localStorage`.
