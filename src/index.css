@@ -653,7 +653,7 @@ button.on-card {
   background: transparent;
   resize: none;
   font-family: "Permanent Marker", cursive;
-  font-size: 18px;
+  font-size: 22.5px;
   line-height: 1.2;
   text-align: center;
   color: var(--vhs-ink);
