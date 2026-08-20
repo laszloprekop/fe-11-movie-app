@@ -111,8 +111,8 @@ describe("buildClues", () => {
   it("lays the fixed ladder: free opener first, synopsis last", () => {
     const clues = buildClues(movie)
     expect(clues.map((c) => c.label)).toEqual([
-      "Speltid & språk",
-      "År",
+      "År, speltid & biroll",
+      "Språk",
       "Genre",
       "Skådespelare",
       "Synopsis",
@@ -120,8 +120,12 @@ describe("buildClues", () => {
     expect(clues.map((c) => c.cost)).toEqual([0, 150, 150, 150, 150])
   })
 
-  it("combines duration and language into the free clue", () => {
-    expect(buildClues(movie)[0].value).toBe("126 min · English")
+  it("opens with year, length and the last-billed name", () => {
+    expect(buildClues(movie)[0].value).toBe("2013 · 126 min · Scarlett Johansson")
+  })
+
+  it("sells the language on the first paid rung", () => {
+    expect(buildClues(movie)[1].value).toBe("English")
   })
 
   it("serves the synopsis masked — Step 39 cashing in", () => {
@@ -133,7 +137,8 @@ describe("buildClues", () => {
   it("names the nulls in Swedish instead of crashing on them", () => {
     const bare = { ...movie, language: null, synopsis: null, actors: [] }
     const clues = buildClues(bare)
-    expect(clues[0].value).toBe("126 min · okänt språk")
+    expect(clues[0].value).toBe("2013 · 126 min · okänd ensemble")
+    expect(clues[1].value).toBe("okänt språk")
     expect(clues[3].value).toBe("okänd ensemble")
     expect(clues[4].value).toBe("synopsis saknas")
   })

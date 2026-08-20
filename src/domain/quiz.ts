@@ -95,15 +95,18 @@ export type QuizMovie = {
 export type Clue = { label: string; value: string; cost: number }
 
 // The ladder is fixed: cheapest information first, the free opener at the
-// top, the masked synopsis last — mechanics.md's table as data.
+// top, the masked synopsis last — mechanics.md's table as data. The opener
+// leaks the year, the length and the last-billed name: casts are seeded in
+// billing order, so the tail is a supporting player, never the star.
 export function buildClues(movie: QuizMovie): Clue[] {
+  const supporting = movie.actors.at(-1) ?? "okänd ensemble"
   return [
     {
-      label: "Speltid & språk",
-      value: `${movie.duration} min · ${movie.language ?? "okänt språk"}`,
+      label: "År, speltid & biroll",
+      value: `${movie.year} · ${movie.duration} min · ${supporting}`,
       cost: 0,
     },
-    { label: "År", value: String(movie.year), cost: CLUE_COST },
+    { label: "Språk", value: movie.language ?? "okänt språk", cost: CLUE_COST },
     { label: "Genre", value: movie.genre, cost: CLUE_COST },
     {
       label: "Skådespelare",
