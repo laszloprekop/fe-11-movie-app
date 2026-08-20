@@ -244,11 +244,7 @@ p.alert {
   background: var(--vhs-card);
   color: var(--vhs-ink);
   font-family: Helvetica, Arial, sans-serif;
-  /* the inset hairline darkens the outermost pixel row, so rotation's
-     antialiased fringe blends into the studio instead of glowing cream */
-  box-shadow:
-    10px 12px 0 rgba(0, 0, 0, 0.55),
-    inset 0 0 0 1px rgba(8, 13, 16, 0.55);
+  box-shadow: 10px 12px 0 rgba(0, 0, 0, 0.55);
 }
 .slipcase-band {
   /* the studio light grazes the box: a faint sheen in the top-left corner */
@@ -257,6 +253,10 @@ p.alert {
     var(--vhs-band);
   color: var(--vhs-card);
   text-align: center;
+  /* rotation antialiasing lets the parent's cream fringe around the band's
+     edge — a same-color outline paints 1px outside the box and covers it
+     (Laszlo's find; an inset hairline on the sleeve did nothing) */
+  outline: 1px solid var(--vhs-band);
 }
 .stripes {
   height: 40px;
@@ -646,8 +646,8 @@ button.on-card {
   line-height: 1.2;
   padding: 8px 6px;
   overflow: hidden;
-  /* same hairline trick as the slipcase — no cream fringe on the shell */
-  box-shadow: inset 0 0 0 1px rgba(8, 13, 16, 0.4);
+  /* the band's outline trick, in the shell's color — no cream fringe */
+  outline: 1px solid var(--vhs-shell);
 }
 /* ruled lines under the handwriting, like a real rental label */
 .tape-label::after {
