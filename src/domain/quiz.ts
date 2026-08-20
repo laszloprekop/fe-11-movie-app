@@ -106,8 +106,11 @@ export function buildClues(movie: QuizMovie): Clue[] {
       value: `${movie.year} · ${movie.duration} min · ${supporting}`,
       cost: 0,
     },
-    { label: "Språk", value: movie.language ?? "okänt språk", cost: CLUE_COST },
-    { label: "Genre", value: movie.genre, cost: CLUE_COST },
+    {
+      label: "Språk & genre",
+      value: `${movie.language ?? "okänt språk"} · ${movie.genre}`,
+      cost: CLUE_COST,
+    },
     {
       label: "Skådespelare",
       value: movie.actors.length > 0 ? movie.actors.join(", ") : "okänd ensemble",

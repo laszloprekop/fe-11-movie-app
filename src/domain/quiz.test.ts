@@ -112,24 +112,23 @@ describe("buildClues", () => {
     const clues = buildClues(movie)
     expect(clues.map((c) => c.label)).toEqual([
       "År, speltid & biroll",
-      "Språk",
-      "Genre",
+      "Språk & genre",
       "Skådespelare",
       "Synopsis",
     ])
-    expect(clues.map((c) => c.cost)).toEqual([0, 150, 150, 150, 150])
+    expect(clues.map((c) => c.cost)).toEqual([0, 150, 150, 150])
   })
 
   it("opens with year, length and the last-billed name", () => {
     expect(buildClues(movie)[0].value).toBe("2013 · 126 min · Scarlett Johansson")
   })
 
-  it("sells the language on the first paid rung", () => {
-    expect(buildClues(movie)[1].value).toBe("English")
+  it("sells language and genre together on the first paid rung", () => {
+    expect(buildClues(movie)[1].value).toBe("English · Drama, Romantik")
   })
 
   it("serves the synopsis masked — Step 39 cashing in", () => {
-    expect(buildClues(movie)[4].value).toBe(
+    expect(buildClues(movie)[3].value).toBe(
       "███ operating system falls in love.",
     )
   })
@@ -138,9 +137,9 @@ describe("buildClues", () => {
     const bare = { ...movie, language: null, synopsis: null, actors: [] }
     const clues = buildClues(bare)
     expect(clues[0].value).toBe("2013 · 126 min · okänd ensemble")
-    expect(clues[1].value).toBe("okänt språk")
-    expect(clues[3].value).toBe("okänd ensemble")
-    expect(clues[4].value).toBe("synopsis saknas")
+    expect(clues[1].value).toBe("okänt språk · Drama, Romantik")
+    expect(clues[2].value).toBe("okänd ensemble")
+    expect(clues[3].value).toBe("synopsis saknas")
   })
 })
 
